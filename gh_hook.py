@@ -10,14 +10,18 @@ app = Flask(__name__)
 bot = Bot(BOT_TOKEN)
 
 
-@app.route('/trigger/<user>/<repo>/<int:chat_id>', methods=['POST'])
+@app.route('/trigger/<user>/<repo>/<chat_id>', methods=['POST'])
 def trigger(user, repo, chat_id):
+    if not chat_id.startswith('-100'):
+        chat_id = int(f'-100{chat_id}')
+    chat_id = int(chat_id)
     data = json.loads(request.data)
     commits = []
     for commit in data['commits']:
         commits.append(
             f'<a href="{commit["url"]}">{commit["id"][:7]}</a>: {commit["message"]} by {commit["author"]["name"]}')
     bot.send_message(chat_id=chat_id, text=f'🔨 {len(commits)} new commits to {repo}:\n\n' + "\n".join(commits))
+    return 'OK'
 
 
 app.run(host='0.0.0.0', port=8009)
