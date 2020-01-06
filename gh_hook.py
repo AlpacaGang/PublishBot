@@ -1,13 +1,13 @@
 import json
 
 from flask import Flask, request
-from telegram import Bot
+from telegram.ext import Updater
 
-from secure import BOT_TOKEN
+from secure import BOT_TOKEN, PROXY
 
 app = Flask(__name__)
 
-bot = Bot(BOT_TOKEN)
+bot = Updater(BOT_TOKEN, request_kwargs=PROXY).bot
 
 
 @app.route('/trigger/<user>/<repo>/<chat_id>', methods=['POST'])
