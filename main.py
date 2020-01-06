@@ -11,16 +11,16 @@ if '--before' in sys.argv:
     bot.send_message(chat_id=chat_id,
                      text=f'⚙️ Build <a href="{os.environ.get("TRAVIS_BUILD_WEB_URL")}">'
                           f'#{os.environ.get("TRAVIS_BUILD_NUMBER")}</a> started...',
-                     parse_mode=ParseMode.HTML)
+                     parse_mode=ParseMode.HTML, disable_web_page_preview=True)
 elif '--after' in sys.argv:
     if os.environ.get('TRAVIS_TEST_RESULT') == 0:
         bot.send_message(chat_id=chat_id,
                          text=f'✅ Build <a href="{os.environ.get("TRAVIS_BUILD_WEB_URL")}">'
                               f'#{os.environ.get("TRAVIS_BUILD_NUMBER")}</a> succeed!',
-                         parse_mode=ParseMode.HTML)
+                         parse_mode=ParseMode.HTML, disable_web_page_preview=True)
         bot.send_document(chat_id=chat_id, document=open(glob.glob(product_filename)[0], 'rb'))
     else:
         bot.send_message(chat_id=chat_id,
                          text=f'❌ Build <a href="{os.environ.get("TRAVIS_BUILD_WEB_URL")}">'
                               f'#{os.environ.get("TRAVIS_BUILD_NUMBER")}</a> failed!',
-                         parse_mode=ParseMode.HTML)
+                         parse_mode=ParseMode.HTML, disable_web_page_preview=True)
