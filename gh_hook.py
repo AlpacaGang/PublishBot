@@ -3,6 +3,7 @@ import json
 from flask import Flask, request
 from telegram import ParseMode
 from telegram.ext import Updater
+from telegram.utils.helpers import escape
 
 from secure import BOT_TOKEN, PROXY
 
@@ -20,8 +21,9 @@ def trigger(user, repo, chat_id):
     commits = []
     for commit in data['commits']:
         commits.append(
-            f'<a href="{commit["url"]}">{commit["id"][:7]}</a>: {commit["message"]} by {commit["author"]["name"]}')
-    bot.send_message(chat_id=chat_id, text=f'🔨 {len(commits)} new commits to {repo}:\n\n' + "\n".join(commits),
+            f'<a href="{commit["url"]}">{commit["id"][:7]}</a>: {escape(commit["message"])} by {escape(commit["author"]["name"])}')
+    bot.send_message(chat_id=chat_id,
+                     text=f'🔨 {len(commits)} new commits to {escape(repo)}:\n\n' + escape("\n".join(commits)),
                      parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     return 'OK'
 
