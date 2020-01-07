@@ -15,12 +15,12 @@ if '--before' in sys.argv:
                      parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     open('/home/travis/time', 'w').write(str(round(time.time())))
 elif '--after' in sys.argv:
-    build_time = time.time() - int(open('/home/travis/time', 'r').read())
+    build_time = int(time.time()) - int(open('/home/travis/time', 'r').read())
     m, s = divmod(build_time, 60)
     h, m = divmod(m, 60)
     build_time_str = f'{s} sec'
     if m > 0:
-        build_time_str = f'{m} min' + build_time_str
+        build_time_str = f'{m} min ' + build_time_str
         if h > 0:
             build_time_str = f'{h} hrs ' + build_time_str
 
