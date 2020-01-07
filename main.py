@@ -13,9 +13,9 @@ if '--before' in sys.argv:
                      text=f'⚙️ Build <a href="{os.environ.get("TRAVIS_BUILD_WEB_URL")}">'
                           f'#{os.environ.get("TRAVIS_BUILD_NUMBER")}</a> started...',
                      parse_mode=ParseMode.HTML, disable_web_page_preview=True)
-    open('~/time', 'w').write(str(round(time.time())))
+    open('/home/travis/time', 'w').write(str(round(time.time())))
 elif '--after' in sys.argv:
-    build_time = time.time() - int(open('~/time', 'r').read())
+    build_time = time.time() - int(open('/home/travis/time', 'r').read())
     m, s = divmod(build_time, 60)
     h, m = divmod(m, 60)
     build_time_str = f'{s} sec'
