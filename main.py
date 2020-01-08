@@ -24,12 +24,14 @@ elif '--after' in sys.argv:
         if h > 0:
             build_time_str = f'{h} hrs ' + build_time_str
 
-    if os.environ.get('TRAVIS_TEST_RESULT') == '0':
+    files_found = glob.glob(product_filename)
+
+    if (os.environ.get('TRAVIS_TEST_RESULT') == '0') or (len(files_found) > 0):
         bot.send_message(chat_id=chat_id,
                          text=f'✅ Build <a href="{os.environ.get("TRAVIS_BUILD_WEB_URL")}">'
                               f'#{os.environ.get("TRAVIS_BUILD_NUMBER")}</a> succeed in a {build_time_str}!',
                          parse_mode=ParseMode.HTML, disable_web_page_preview=True)
-        bot.send_document(chat_id=chat_id, document=open(glob.glob(product_filename)[0], 'rb'))
+        bot.send_document(chat_id=chat_id, document=open(files_found[0], 'rb'))
     else:
         bot.send_message(chat_id=chat_id,
                          text=f'❌ Build <a href="{os.environ.get("TRAVIS_BUILD_WEB_URL")}">'
