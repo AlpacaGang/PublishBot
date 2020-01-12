@@ -21,7 +21,7 @@ def trigger(user, repo, chat_id):
     commits = []
     for commit in data['commits']:
         commits.append(
-            f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <pre>{escape(commit["message"])}</pre> by {escape(commit["author"]["name"])}')
+            f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <code>{escape(commit["message"])}</code> by {escape(commit["author"]["name"])}')
     bot.send_message(chat_id=chat_id,
                      text=f'🔨 {len(commits)} new commits to {escape(repo)}:\n\n' + "\n".join(commits),
                      parse_mode=ParseMode.HTML, disable_web_page_preview=True)
