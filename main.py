@@ -26,7 +26,7 @@ elif '--after' in sys.argv:
 
     files_found = glob.glob(product_filename)
 
-    if (os.environ.get('TRAVIS_TEST_RESULT') == '0') or (len(files_found) > 0):
+    if (os.environ.get('TRAVIS_TEST_RESULT') == '0') and (len(files_found) > 0):
         bot.send_message(chat_id=chat_id,
                          text=f'✅ Build <a href="{os.environ.get("TRAVIS_BUILD_WEB_URL")}">'
                               f'#{os.environ.get("TRAVIS_BUILD_NUMBER")}</a> succeed in a {build_time_str}!',
