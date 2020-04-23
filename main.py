@@ -10,7 +10,7 @@ chat_id = int(os.environ.get('chat_id'))
 product_filename = os.environ.get('product_filename')
 if '--before' in sys.argv:
     bot.send_message(chat_id=chat_id,
-                     text=f'⚙️ Local build for platina started...',
+                     text=f'⚙️ Build for platina started...',
                      parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     open('/home/fedshat/time', 'w').write(str(round(time.time())))
 elif '--after' in sys.argv:
@@ -27,10 +27,10 @@ elif '--after' in sys.argv:
 
     if len(files_found) > 0:
         bot.send_message(chat_id=chat_id,
-                         text=f'✅ Local build for platina succeed in a {build_time_str}!',
+                         text=f'✅ Build for platina finished in a {build_time_str}!',
                          parse_mode=ParseMode.HTML, disable_web_page_preview=True)
         bot.send_document(chat_id=chat_id, document=open(files_found[0], 'rb'))
     else:
         bot.send_message(chat_id=chat_id,
-                         text=f'❌ Local build for platina failed in a {build_time_str}!',
+                         text=f'❌ Build for platina failed in a {build_time_str}!',
                          parse_mode=ParseMode.HTML, disable_web_page_preview=True)
