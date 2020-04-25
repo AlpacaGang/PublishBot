@@ -6,8 +6,8 @@ import time
 from telegram import Bot, ParseMode
 
 bot = Bot(os.environ.get('token'))
-chat_id = int(os.environ.get('chat_id'))
-product_filename = os.environ.get('product_filename')
+chat_id = int(os.environ.get('CHAT_ID'))
+product_filename = os.environ.get('PRODUCT_FILENAME')
 if '--before' in sys.argv:
     bot.send_message(chat_id=chat_id,
                      text=f'⚙️ Build for platina started...',
