@@ -2,3 +2,4 @@ setuptools
 python-telegram-bot
 flask
 pysocks
+gitpython
