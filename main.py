@@ -57,7 +57,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
         for chunk in iter(lambda: f.read(4096), b''):
             hash_md5.update(chunk)
     bot.send_document(chat_id=CHAT_ID, document=open(FILENAME, 'rb'),
-                      caption=f'✅ Build for {DEVICE} with {COMPILER_STRING} finished in a '
+                      caption=f'✅ Build for {DEVICE} with {escape_markdown(COMPILER_STRING, version=2)} finished in a '
                               f'{build_time.strftime("%-M mins %-S secs")} | MD5: `{hash_md5.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
     os.remove(FILENAME)
@@ -65,5 +65,6 @@ else:
     print('========== Build failed ==========')
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
     bot.send_message(chat_id=CHAT_ID,
-                     text=f'❌ Build for {DEVICE} with {COMPILER_STRING} failed in a {build_time.strftime("%M mins %S secs")}!')
+                     text=f'❌ Build for {DEVICE} with {escape_markdown(COMPILER_STRING, version=2)} '
+                          f'failed in a {build_time.strftime("%M mins %S secs")}!')
 os.chdir(expanduser('~') + '/build/kernel_xiaomi_platina')
