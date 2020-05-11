@@ -56,7 +56,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
-    os.system(f'java -jar {ZIPSIGNER_PATH} x509.pem pk8 {FILENAME} {FILENAME[::-1].split(".", 1)[1][::-1]}-signed.zip')
+    os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {FILENAME[::-1].split(".", 1)[1][::-1]}-signed.zip')
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
     hash_md5 = hashlib.md5()
     with open(FILENAME, 'rb') as f:
