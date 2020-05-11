@@ -27,8 +27,8 @@ CROSS_COMPILE = expanduser('~') + '/build/tools/arm64-gcc/bin/aarch64-elf-'
 REPO = 'AlpacaGang/kernel_xiaomi_platina'
 NPROC = multiprocessing.cpu_count()
 
-X508_PATH = expanduser('~') + '/.keys/certificate.pem'
-PK8_PATH = expanduser('~') + '/.keys/key.pk8'
+X508_PATH = expanduser('~') + '/certificate.pem'
+PK8_PATH = expanduser('~') + '/key.pk8'
 ZIPSIGNER_PATH = expanduser('~') + '/zipsigner-3.0.jar'
 
 bot = Bot(os.environ.get('TOKEN'))
