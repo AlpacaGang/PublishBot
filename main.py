@@ -26,6 +26,10 @@ CROSS_COMPILE = expanduser('~') + '/build/tools/arm64-gcc/bin/aarch64-elf-'
 REPO = 'AlpacaGang/kernel_xiaomi_platina'
 NPROC = multiprocessing.cpu_count()
 
+X508_PATH = expanduser('~') + '/.keys/certificate.pem'
+PK8_PATH = expanduser('~') + '/.keys/key.pk8'
+ZIPSIGNER_PATH = expanduser('~') + '/zipsigner-3.0.jar'
+
 bot = Bot(os.environ.get('TOKEN'))
 repo = Repo('.')
 
@@ -51,6 +55,8 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.rename('out/arch/arm64/boot/Image.gz-dtb', expanduser('~') + '/build/AK3/Image.gz-dtb')
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
+    print('========== Signing ==========')
+    os.system(f'java -jar {ZIPSIGNER_PATH} x509.pem pk8 {FILENAME} {FILENAME[::-1].split(".", 1)[1:][::-1]}-signed.zip')
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
     hash_md5 = hashlib.md5()
     with open(FILENAME, 'rb') as f:
