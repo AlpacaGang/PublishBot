@@ -18,6 +18,7 @@ TIMESTAMP = datetime.now(TZ)
 
 CHAT_ID = -1001115967921
 FILENAME = f'../AlpacaKernel-v8-GCC-9.x-LTO-{TIMESTAMP.strftime("%y%m%d-%H%M")}.zip'
+SIGNED_FILENAME = f'../AlpacaKernel-v8-GCC-9.x-LTO-{TIMESTAMP.strftime("%y%m%d-%H%M")}-signed.zip'
 COMPILER_STRING = 'GCC 9.x'
 KERNEL_VERSION = 'Alpaca, v8, LTO'
 DEVICE = 'platina'
@@ -56,13 +57,13 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
-    os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {FILENAME[::-1].split(".", 1)[1][::-1]}-signed.zip')
+    os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
     hash_md5 = hashlib.md5()
-    with open(FILENAME, 'rb') as f:
+    with open(SIGNED_FILENAME, 'rb') as f:
         for chunk in iter(lambda: f.read(4096), b''):
             hash_md5.update(chunk)
-    bot.send_document(chat_id=CHAT_ID, document=open(FILENAME, 'rb'),
+    bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
                       caption=f'✅ Build for {DEVICE} finished in a '
                               f'{build_time.strftime("%-M mins %-S secs")} \\| MD5: `{hash_md5.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
