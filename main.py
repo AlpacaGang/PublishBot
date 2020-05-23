@@ -17,8 +17,8 @@ os.environ['KERNEL_USE_CCACHE'] = '1'
 TIMESTAMP = datetime.now(TZ)
 
 CHAT_ID = -1001115967921
-FILENAME = f'../AlpacaKernel-v9-GCC-9.x-LTO-{TIMESTAMP.strftime("%y%m%d-%H%M")}.zip'
-SIGNED_FILENAME = f'../AlpacaKernel-v9-GCC-9.x-LTO-{TIMESTAMP.strftime("%y%m%d-%H%M")}-signed.zip'
+FILENAME = f'../AlpacaKernel-v9-{TIMESTAMP.strftime("%y%m%d-%H%M")}.zip'
+SIGNED_FILENAME = f'../AlpacaKernel-v9-{TIMESTAMP.strftime("%y%m%d-%H%M")}-signed.zip'
 COMPILER_STRING = 'GCC 9.x'
 KERNEL_VERSION = 'Alpaca, v9, LTO'
 DEVICE = 'platina'
