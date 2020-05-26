@@ -17,10 +17,10 @@ os.environ['KERNEL_USE_CCACHE'] = '1'
 TIMESTAMP = datetime.now(TZ)
 
 CHAT_ID = -1001115967921
-FILENAME = f'../AlpacaKernel-v9-{TIMESTAMP.strftime("%y%m%d-%H%M")}.zip'
-SIGNED_FILENAME = f'../AlpacaKernel-v9-{TIMESTAMP.strftime("%y%m%d-%H%M")}-signed.zip'
+FILENAME = f'../AlpacaKernel-r10-{TIMESTAMP.strftime("%y%m%d-%H%M")}.zip'
+SIGNED_FILENAME = f'../AlpacaKernel-r10-{TIMESTAMP.strftime("%y%m%d-%H%M")}-signed.zip'
 COMPILER_STRING = 'GCC 9.x'
-KERNEL_VERSION = 'Alpaca, v9, LTO'
+KERNEL_VERSION = 'Alpaca, r10, LTO'
 DEVICE = 'platina'
 DEFCONFIG = 'platina_defconfig'
 CROSS_COMPILE = expanduser('~') + '/build/tools/arm64-gcc/bin/aarch64-elf-'
