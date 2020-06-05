@@ -17,14 +17,18 @@ def trigger(user, repo, chat_id):
         chat_id = int(f'-100{chat_id}')
     chat_id = int(chat_id)
     data = json.loads(request.data)
-    commits = []
-    for commit in data['commits']:
-        commits.append(
-            f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <code>{escape(commit["message"])}</code> by {escape(commit["author"]["name"])}')
+    if len(data['commits']) <= 6:
+        commits = []
+        for commit in data['commits']:
+            msg = escape(commit["message"].split("\n")[0])
+            commit = f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <code>{msg}</code>'
+            commits.append(commit)
+        commits = ':\n\n' + '\n'.join(commits)
+    else:
+        commits = ''
     bot.send_message(chat_id=chat_id,
-                     text=f'🔨 {len(commits)} new {"commit" if len(commits) == 1 else "commits"} '
-                          f'to <b>{escape(repo)}:{escape(data["ref"].split("/")[-1])}</b>:\n\n' +
-                          "\n".join(commits)[:3900],
+                     text=f'🔨 {len(data["commits"])} new {"commit" if len(data["commits"]) == 1 else "commits"} '
+                          f'to <b>{escape(repo)}:{escape(data["ref"].split("/")[-1])}</b>' + commits,
                      parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     return 'OK'
 
