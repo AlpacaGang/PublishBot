@@ -49,7 +49,10 @@ if os.path.isfile('.config'):
     os.remove('.config')
 print('========== Making defconfig ==========')
 os.system(f'make O=out ARCH=arm64 {DEFCONFIG}')
-os.system(f'sed s/Alpaca/Alpaca-{repo.active_branch.commit.hexsha[:8]}-{repo.active_branch.name}/ out/.config > out/.config')
+with open('out/.config', 'r') as f:
+    data = f.read()
+with open('out/.config', 'w') as f:
+    f.write(data.replace('Alpaca', f'Alpaca-{repo.active_branch.commit.hexsha[:8]}-{repo.active_branch.name}'))
 print('========== Building kernel ==========')
 if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}'):
     print('========== Build succeed ==========')

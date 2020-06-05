@@ -111,3 +111,4 @@ dmypy.json
 .idea/
 secure.py
 venv/
+kernel_xiaomi_platina/
