@@ -11,8 +11,7 @@ from telethon.tl.custom import Message
 os.environ['TZ'] = 'Europe/Moscow'
 TZ = timezone(timedelta(hours=3))
 TIMESTAMP = datetime.now(TZ)
-# -100 не надо
-CHAT_ID = 1235981203
+CHAT_ID = -1001235981203
 
 tree_dir = os.getcwd()
 
