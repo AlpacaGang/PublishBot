@@ -47,7 +47,7 @@ bot.send_message(CHAT_ID, f'⚙️ Device tree commit: {update_and_get_tree("dev
 
 
 def lineage_exec(cmd):
-    return os.system('sh -c "source build/envsetup.sh; breakfast platina; ' + cmd.replace('"', '\\"') + '"')
+    return os.system('bash -c "source build/envsetup.sh; breakfast platina; ' + cmd.replace('"', '\\"') + '"')
 
 
 bot.send_message(CHAT_ID, f'⚙️ Building...\n')
