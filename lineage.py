@@ -1,6 +1,7 @@
 import hashlib
 import os
 from datetime import datetime, timezone, timedelta
+from glob import glob
 from os.path import join
 
 from git import Repo
@@ -12,6 +13,7 @@ os.environ['TZ'] = 'Europe/Moscow'
 TZ = timezone(timedelta(hours=3))
 TIMESTAMP = datetime.now(TZ)
 CHAT_ID = -1001235981203
+DEVICE = 'platina'
 
 tree_dir = os.getcwd()
 
@@ -47,15 +49,16 @@ bot.send_message(CHAT_ID, f'⚙️ Device tree commit: {update_and_get_tree("dev
 
 
 def lineage_exec(cmd):
-    return os.system('bash -c "source build/envsetup.sh; breakfast platina; ' + cmd.replace('"', '\\"') + '"')
+    return os.system(f'bash -c "source build/envsetup.sh; breakfast {DEVICE}; ' + cmd.replace('"', '\\"') + '"')
 
 
 bot.send_message(CHAT_ID, f'⚙️ Building...\n')
 if not lineage_exec('mka target-files-package otatools'):
     bot.send_message(CHAT_ID, f'⚙️ Signing...\n')
+    target_files = glob(f'out/target/product/{DEVICE}/obj/PACKAGING/target_files_intermediates/*-target_files-*.zip')[0]
     lineage_exec(
         './build/tools/releasetools/sign_target_files_apks -o -d '
-        '~/.android-certs $OUT/obj/PACKAGING/target_files_intermediates/*-target_files-*.zip signed-target_files.zip;'
+        f'~/.android-certs {target_files} signed-target_files.zip;'
 
         './build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey '
         '--block --backup=true signed-target_files.zip ' + SIGNED_FILENAME)
