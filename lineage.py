@@ -21,10 +21,10 @@ SIGNED_FILENAME = join(tree_dir, f'../lineage-17.1-{TIMESTAMP.strftime("%Y%m%d")
 bot = TelegramClient('bot', int(os.environ['API_ID']), os.environ['API_HASH']).start(bot_token=os.environ['TOKEN'])
 
 
-def update_and_get_tree(s):
+def update_and_get_tree(s, branch):
     os.chdir(s)
     os.system(f'git fetch --all')
-    os.system(f'git reset --hard origin/staging')
+    os.system(f'git reset --hard origin/' + branch)
     repo = Repo('.')
 
     commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0])
@@ -39,11 +39,11 @@ bot.send_message(CHAT_ID, f'⚙️ Build started...\n')
 bot.send_message(CHAT_ID, f'⚙️ Syncing main tree...\n')
 os.system(f'repo sync')
 bot.send_message(CHAT_ID, f'⚙️ Syncing device trees...\n')
-bot.send_message(CHAT_ID, f'⚙️ Device tree commit: {update_and_get_tree("device/xiaomi/platina")}\n'
-                          f'  Common device tree commit: {update_and_get_tree("device/xiaomi/sdm660-common")}\n'
-                          f'  Vendor tree commit: {update_and_get_tree("vendor/xiaomi/platina")}\n'
-                          f'  Common vendor tree commit: {update_and_get_tree("vendor/xiaomi/sdm660-common")}\n'
-                          f'  Kernel commit: {update_and_get_tree("kernel/xiaomi/platina")}')
+bot.send_message(CHAT_ID, f'⚙️ Device tree commit: {update_and_get_tree("device/xiaomi/platina", "lineage-17.x")}\n'
+                          f'  Common device tree commit: {update_and_get_tree("device/xiaomi/sdm660-common", "lineage-17.x")}\n'
+                          f'  Vendor tree commit: {update_and_get_tree("vendor/xiaomi/platina", "master")}\n'
+                          f'  Common vendor tree commit: {update_and_get_tree("vendor/xiaomi/sdm660-common", "eas")}\n'
+                          f'  Kernel commit: {update_and_get_tree("kernel/xiaomi/platina", "staging")}')
 
 
 def lineage_exec(cmd):
