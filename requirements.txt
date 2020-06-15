@@ -3,3 +3,5 @@ python-telegram-bot
 flask
 pysocks
 gitpython
+telethon
+cryptg
