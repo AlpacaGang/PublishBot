@@ -34,6 +34,11 @@ ZIPSIGNER_PATH = expanduser('~') + '/zipsigner-3.0.jar'
 bot = Bot(os.environ.get('TOKEN'))
 repo = Repo('.')
 
+# Updating repo
+os.system(f'git fetch --all')
+branch = repo.active_branch.name
+os.system(f'git reset --hard origin/' + branch)
+
 commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{repo.active_branch.name}:' \
          f'`[{repo.active_branch.commit.hexsha[:7]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})\n' \
