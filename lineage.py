@@ -25,8 +25,8 @@ bot = TelegramClient('bot', int(os.environ['API_ID']), os.environ['API_HASH']).s
 
 def update_and_get_tree(s, branch):
     os.chdir(s)
-    os.system(f'git fetch --all')
-    os.system(f'git reset --hard origin/' + branch)
+    os.system('git fetch --all')
+    os.system('git reset --hard origin/' + branch)
     repo = Repo('.')
 
     commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0])
@@ -37,10 +37,10 @@ def update_and_get_tree(s, branch):
     return res
 
 
-bot.send_message(CHAT_ID, f'⚙️ Build started...\n')
-bot.send_message(CHAT_ID, f'⚙️ Syncing main tree...\n')
-os.system(f'repo sync')
-bot.send_message(CHAT_ID, f'⚙️ Syncing device trees...\n')
+bot.send_message(CHAT_ID, '⚙️ Build started...\n')
+bot.send_message(CHAT_ID, '⚙️ Syncing main tree...\n')
+os.system('repo sync')
+bot.send_message(CHAT_ID, '⚙️ Syncing device trees...\n')
 bot.send_message(CHAT_ID, f'⚙️ Device tree commit: {update_and_get_tree("device/xiaomi/platina", "lineage-17.x")}\n'
                           f'  Common device tree commit: {update_and_get_tree("device/xiaomi/sdm660-common", "lineage-17.x")}\n'
                           f'  Vendor tree commit: {update_and_get_tree("vendor/xiaomi/platina", "master")}\n'
@@ -52,9 +52,9 @@ def lineage_exec(cmd):
     return os.system(f'bash -c "source build/envsetup.sh; breakfast {DEVICE}; ' + cmd.replace('"', '\\"') + '"')
 
 
-bot.send_message(CHAT_ID, f'⚙️ Building...\n')
+bot.send_message(CHAT_ID, '⚙️ Building...\n')
 if not lineage_exec('mka target-files-package otatools'):
-    bot.send_message(CHAT_ID, f'⚙️ Signing...\n')
+    bot.send_message(CHAT_ID, '⚙️ Signing...\n')
     target_files = glob(f'out/target/product/{DEVICE}/obj/PACKAGING/target_files_intermediates/*-target_files-*.zip')[0]
     lineage_exec(
         './build/tools/releasetools/sign_target_files_apks -o -d '
