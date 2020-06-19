@@ -18,7 +18,8 @@ def trigger(user, repo, chat_id):
     chat_id = int(chat_id)
     data = json.loads(request.data)
     if data['forced']:
-        bot.send_message(chat_id=chat_id, text=f'🔨 Башка поехала')
+        head = data['after']
+        bot.send_message(chat_id=chat_id, text=f'🔨 Some commits were reset. HEAD is now at {head}')
     else:
         if len(data['commits']) <= 6:
             commits = []
