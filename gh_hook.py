@@ -18,8 +18,8 @@ def trigger(user, repo, chat_id):
     chat_id = int(chat_id)
     data = json.loads(request.data)
     if data['forced']:
-        head = data['after'][:7]
-        head = f'<a href="{data["repository"]}/commit/{data["after"]}">{escape(data["after"][:7])}</a>'
+        head = data['after']
+        head = f'<a href="{data["repository"]["html_url"]}/commit/{head}">{escape(head[:7])}</a>'
         bot.send_message(chat_id=chat_id, text=f'🔨 Some commits were reset. HEAD is now at {head}',
                         parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     else:
