@@ -33,11 +33,17 @@ ZIPSIGNER_PATH = expanduser('~') + '/zipsigner-3.0.jar'
 
 bot = Bot(os.environ.get('TOKEN'))
 repo = Repo('.')
+tree_dir = os.getcwd()
 
-# Updating repo
-os.system(f'git fetch --all')
-branch = repo.active_branch.name
-os.system(f'git reset --hard origin/' + branch)
+def update_tree(p, b):
+    os.chdir(p)
+    os.system('git fetch --all')
+    os.system('git reset --hard origin/' + b)
+    os.chdir(tree_dir)
+
+update_tree('.', 'staging')
+update_tree('../AK3', 'master')
+update_tree('../tools/arm64-gcc', 'master')
 
 commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{branch}:' \
