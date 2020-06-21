@@ -91,4 +91,4 @@ else:
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
     bot.send_message(chat_id=CHAT_ID,
                      text=f'❌ Build for {DEVICE} failed in a {build_time.strftime("%-M mins %-S secs")}!')
-os.chdir(expanduser('~') + '/build/kernel_xiaomi_platina')
+os.chdir(tree_dir)
