@@ -46,7 +46,7 @@ update_tree('../AK3', 'master')
 update_tree('../tools/arm64-gcc', 'master')
 
 commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
-commit = f'`{branch}:' \
+commit = f'`{repo.active_branch.name}:' \
          f'`[{repo.active_branch.commit.hexsha[:7]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})\n' \
          f'`{commit_msg}`'
 bot.send_message(chat_id=CHAT_ID,
