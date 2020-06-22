@@ -63,7 +63,7 @@ if not lineage_exec('mka target-files-package otatools'):
         './build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey '
         '--block --backup=true signed-target_files.zip ' + SIGNED_FILENAME)
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
-    bot.send_message(CHAT_ID, f'✅ Build succeed in a {build_time.strftime("%-M mins %-S secs")}!')
+    bot.send_message(CHAT_ID, f'✅ Build succeed in a {build_time.strftime("%-H hours %-M mins %-S secs")}!')
     uploading_msg: Message = bot.send_message(CHAT_ID, '⚙ Uploading, please wait...')
     msg: Message = bot.send_file(CHAT_ID, SIGNED_FILENAME, caption='MD5: `Loading...`', parse_mode='md')
     uploading_msg.delete()
@@ -74,4 +74,4 @@ if not lineage_exec('mka target-files-package otatools'):
     msg.edit(f'MD5: `{hash.hexdigest()}`', parse_mode='md')
 else:
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
-    bot.send_message(CHAT_ID, f'❌ Build failed in a {build_time.strftime("%-M mins %-S secs")}!')
+    bot.send_message(CHAT_ID, f'❌ Build failed in a {build_time.strftime("%-H hours %-M mins %-S secs")}!')
