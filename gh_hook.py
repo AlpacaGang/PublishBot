@@ -11,30 +11,38 @@ app = Flask(__name__)
 bot = Updater(BOT_TOKEN, request_kwargs=PROXY).bot
 
 
-@app.route('/trigger/<user>/<repo>/<chat_id>', methods=['POST'])
-def trigger(user, repo, chat_id):
+@app.route('/trigger/<chat_id>/<options>', methods=['POST'])
+def trigger(chat_id, options):
+    show_author_name = bool(int(options[0]))
+    multiline_commit = bool(int(options[1]))
     if not chat_id.startswith('-100'):
         chat_id = int(f'-100{chat_id}')
     chat_id = int(chat_id)
     data = json.loads(request.data)
     if data['forced']:
-        head = data['after']
-        head = f'<a href="{data["repository"]["html_url"]}/commit/{head}">{escape(head[:7])}</a>'
+        head_sha = data["after"]
+        head = f'<a href="{data["repository"]["html_url"]}/commit/{head_sha}">{escape(head_sha[:7])}</a>'
+        if show_author_name:
+            head += f'\n- by {data["pusher"]["name"]}'
         bot.send_message(chat_id=chat_id, text=f'🔨 Some commits were reset. HEAD is now at {head}',
-                        parse_mode=ParseMode.HTML, disable_web_page_preview=True)
+                         parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     else:
         if len(data['commits']) <= 6:
             commits = []
             for commit in data['commits']:
-                msg = escape(commit["message"].split("\n")[0])
-                commit = f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <code>{msg}</code>'
-                commits.append(commit)
+                msg = escape(commit["message"].split("\n"))
+                if not multiline_commit:
+                    msg = msg.split('\n')[0]
+                commit_msg = f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <code>{msg}</code>'
+                if show_author_name:
+                    commit_msg += f'\n- by {commit["author"]["name"]}'
+                commits.append(commit_msg)
             commits = ':\n\n' + '\n'.join(commits)
         else:
             commits = ''
         bot.send_message(chat_id=chat_id,
                          text=f'🔨 {len(data["commits"])} new {"commit" if len(data["commits"]) == 1 else "commits"} '
-                              f'to <b>{escape(repo)}:{escape(data["ref"].split("/")[-1])}</b>' + commits,
+                              f'to <b>{escape(data["repository"]["full_name"])}:{escape(data["ref"].split("/")[-1])}</b>' + commits,
                          parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     return 'OK'
 
