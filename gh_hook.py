@@ -19,11 +19,12 @@ def trigger(chat_id, options):
         chat_id = int(f'-100{chat_id}')
     chat_id = int(chat_id)
     data = json.loads(request.data)
-    if data['forced']:
+    gitea = 'forced' not in data
+    if not gitea and data['forced']:
         head_sha = data["after"]
         head = f'<a href="{data["repository"]["html_url"]}/commit/{head_sha}">{escape(head_sha[:7])}</a>'
         if show_author_name:
-            head += f'\n- by {data["pusher"]["name"]}'
+            head += f'\n- by {data["pusher"]["full_name"] if gitea else data["pusher"]["name"]}'
         bot.send_message(chat_id=chat_id, text=f'🔨 Some commits were reset. HEAD is now at {head}',
                          parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     else:
