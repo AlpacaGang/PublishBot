@@ -30,7 +30,7 @@ def trigger(chat_id, options):
         if len(data['commits']) <= 6:
             commits = []
             for commit in data['commits']:
-                msg = escape(commit["message"].split("\n"))
+                msg = escape(commit["message"])
                 if not multiline_commit:
                     msg = msg.split('\n')[0]
                 commit_msg = f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <code>{msg}</code>'
