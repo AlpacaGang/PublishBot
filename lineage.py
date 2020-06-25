@@ -39,7 +39,7 @@ def update_and_get_tree(s, branch):
 
 bot.send_message(CHAT_ID, '⚙️ Build started...\n')
 bot.send_message(CHAT_ID, '⚙️ Syncing main tree...\n')
-os.system('repo sync')
+os.system('repo sync --force-sync')
 bot.send_message(CHAT_ID, '⚙️ Syncing device trees...\n')
 bot.send_message(CHAT_ID, f'⚙️ Device tree commit: {update_and_get_tree("device/xiaomi/platina", "lineage-17.x")}\n'
                           f'  Common device tree commit: {update_and_get_tree("device/xiaomi/sdm660-common", "lineage-17.x")}\n'
