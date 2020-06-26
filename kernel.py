@@ -78,7 +78,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
     os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
-    delta = time() - start_time
+    delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     hash = hashlib.sha1()
     with open(SIGNED_FILENAME, 'rb') as f:
@@ -93,7 +93,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.remove(FILENAME)
 else:
     print('========== Build failed ==========')
-    delta = time() - start_time
+    delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
                      text=f'❌ Build for {DEVICE} failed in a {build_time}!')
