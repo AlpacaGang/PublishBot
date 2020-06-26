@@ -1,6 +1,7 @@
 import hashlib
 import multiprocessing
 import os
+from datetime import datetime
 from os.path import expanduser
 from time import time
 
@@ -13,7 +14,8 @@ os.environ['KBUILD_BUILD_HOST'] = 'fedshatci'
 os.environ['TZ'] = 'Europe/Moscow'
 os.environ['KERNEL_USE_CCACHE'] = '1'
 
-TIMESTAMP = time()
+start_time = time()
+TIMESTAMP = datetime.now()
 
 CHAT_ID = -1001115967921
 FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}.zip'
@@ -76,7 +78,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
     os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
-    delta = time() - TIMESTAMP
+    delta = time() - start_time
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     hash = hashlib.sha1()
     with open(SIGNED_FILENAME, 'rb') as f:
@@ -91,7 +93,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.remove(FILENAME)
 else:
     print('========== Build failed ==========')
-    delta = time() - TIMESTAMP
+    delta = time() - start_time
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
                      text=f'❌ Build for {DEVICE} failed in a {build_time}!')

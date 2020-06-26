@@ -3,6 +3,7 @@ import os
 from glob import glob
 from os.path import join
 from time import time
+from datetime import datetime
 
 from git import Repo
 from telegram.utils.helpers import escape_markdown
@@ -10,7 +11,8 @@ from telethon.sync import TelegramClient
 from telethon.tl.custom import Message
 
 os.environ['TZ'] = 'Europe/Moscow'
-TIMESTAMP = time()
+start_time = time()
+TIMESTAMP = datetime.now()
 CHAT_ID = -1001235981203
 DEVICE = 'platina'
 
@@ -61,7 +63,7 @@ if not lineage_exec('mka target-files-package otatools'):
 
         './build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey '
         '--block --backup=true signed-target_files.zip ' + SIGNED_FILENAME)
-    delta = time() - TIMESTAMP
+    delta = time() - start_time
     build_time = f'{delta // 60 // 60} hours {delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(CHAT_ID, f'✅ Build succeed in a {build_time}!')
     uploading_msg: Message = bot.send_message(CHAT_ID, '⚙ Uploading, please wait...')
@@ -73,6 +75,6 @@ if not lineage_exec('mka target-files-package otatools'):
             hash.update(chunk)
     msg.edit(f'MD5: `{hash.hexdigest()}`', parse_mode='md')
 else:
-    delta = time() - TIMESTAMP
+    delta = time() - start_time
     build_time = f'{delta // 60 // 60} hours {delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(CHAT_ID, f'❌ Build failed in a {build_time}!')
