@@ -1,8 +1,8 @@
 import hashlib
 import multiprocessing
 import os
-from datetime import datetime, timezone, timedelta
 from os.path import expanduser
+from time import time
 
 from git import Repo
 from telegram import ParseMode, Bot
@@ -11,10 +11,9 @@ from telegram.utils.helpers import escape_markdown
 os.environ['KBUILD_BUILD_USER'] = 'fedshat'
 os.environ['KBUILD_BUILD_HOST'] = 'fedshatci'
 os.environ['TZ'] = 'Europe/Moscow'
-TZ = timezone(timedelta(hours=3))
 os.environ['KERNEL_USE_CCACHE'] = '1'
 
-TIMESTAMP = datetime.now(TZ)
+TIMESTAMP = time()
 
 CHAT_ID = -1001115967921
 FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}.zip'
@@ -35,11 +34,13 @@ bot = Bot(os.environ.get('TOKEN'))
 repo = Repo('.')
 tree_dir = os.getcwd()
 
+
 def update_tree(p, b):
     os.chdir(p)
     os.system('git fetch --all')
     os.system('git reset --hard origin/' + b)
     os.chdir(tree_dir)
+
 
 update_tree('.', 'staging')
 update_tree('../AK3', 'master')
@@ -68,27 +69,30 @@ print('========== Building kernel ==========')
 if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}'):
     print('========== Build succeed ==========')
     os.rename('out/arch/arm64/boot/Image.gz', expanduser('~') + '/build/AK3/kernel/Image.gz')
-    os.rename('out/arch/arm64/boot/dts/qcom/platina-sdm660.dtb', expanduser('~') + '/build/AK3/treble/platina-sdm660.dtb')
+    os.rename('out/arch/arm64/boot/dts/qcom/platina-sdm660.dtb',
+              expanduser('~') + '/build/AK3/treble/platina-sdm660.dtb')
     os.rename('out/arch/arm64/boot/dts/qcom/xiaomi-sdm660.dtb', expanduser('~') + '/build/AK3/treble/xiaomi-sdm660.dtb')
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
     os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
-    build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
+    delta = time() - TIMESTAMP
+    build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     hash = hashlib.sha1()
     with open(SIGNED_FILENAME, 'rb') as f:
         for chunk in iter(lambda: f.read(4096), b''):
             hash.update(chunk)
     bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
                       caption=f'✅ Build for {DEVICE} finished in a '
-                              f'{build_time.strftime("%-M mins %-S secs")} \\| SHA1: `{hash.hexdigest()}`',
+                              f'{build_time} \\| SHA1: `{hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
     os.system(f'scp {SIGNED_FILENAME} fedshat@build.ivan1874.dynu.net:~/builds')
     os.remove(SIGNED_FILENAME)
     os.remove(FILENAME)
 else:
     print('========== Build failed ==========')
-    build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
+    delta = time() - TIMESTAMP
+    build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
-                     text=f'❌ Build for {DEVICE} failed in a {build_time.strftime("%-M mins %-S secs")}!')
+                     text=f'❌ Build for {DEVICE} failed in a {build_time}!')
 os.chdir(tree_dir)
