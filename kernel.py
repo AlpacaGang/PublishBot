@@ -3,7 +3,6 @@ import multiprocessing
 import os
 from datetime import datetime, timezone, timedelta
 from os.path import expanduser
-from shutil import copy
 
 from git import Repo
 from telegram import ParseMode, Bot
@@ -20,8 +19,6 @@ TIMESTAMP = datetime.now(TZ)
 CHAT_ID = -1001115967921
 FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}.zip'
 SIGNED_FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-signed.zip'
-MIUI_FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-MIUI.zip'
-MIUI_SIGNED_FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-signed-MIUI.zip'
 COMPILER_STRING = 'GCC 10.x'
 KERNEL_VERSION = 'Alpaca, r16, LTO'
 DEVICE = 'platina'
@@ -38,13 +35,11 @@ bot = Bot(os.environ.get('TOKEN'))
 repo = Repo('.')
 tree_dir = os.getcwd()
 
-
 def update_tree(p, b):
     os.chdir(p)
     os.system('git fetch --all')
     os.system('git reset --hard origin/' + b)
     os.chdir(tree_dir)
-
 
 update_tree('.', 'staging')
 update_tree('../AK3', 'master')
@@ -72,45 +67,25 @@ with open('out/.config', 'w') as f:
 print('========== Building kernel ==========')
 if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}'):
     print('========== Build succeed ==========')
-    # std
-    copy('out/arch/arm64/boot/Image.gz', expanduser('~') + '/build/AK3/kernel/Image.gz')
-    copy('out/arch/arm64/boot/dts/qcom/platina-sdm660.dtb', expanduser('~') + '/build/AK3/treble/platina-sdm660.dtb')
-    copy('out/arch/arm64/boot/dts/qcom/xiaomi-sdm660.dtb', expanduser('~') + '/build/AK3/treble/xiaomi-sdm660.dtb')
+    os.rename('out/arch/arm64/boot/Image.gz', expanduser('~') + '/build/AK3/kernel/Image.gz')
+    os.rename('out/arch/arm64/boot/dts/qcom/platina-sdm660.dtb', expanduser('~') + '/build/AK3/treble/platina-sdm660.dtb')
+    os.rename('out/arch/arm64/boot/dts/qcom/xiaomi-sdm660.dtb', expanduser('~') + '/build/AK3/treble/xiaomi-sdm660.dtb')
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
     os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
-    # Memeui
-    os.chdir(tree_dir)
-    copy('out/arch/arm64/boot/Image.gz', expanduser('~') + '/build/AK3MIUI/kernel/Image.gz')
-    copy('out/arch/arm64/boot/dts/qcom/platina-sdm660.dtb', expanduser('~') + '/build/AK3MIUI/treble/platina-sdm660.dtb')
-    copy('out/arch/arm64/boot/dts/qcom/xiaomi-sdm660.dtb', expanduser('~') + '/build/AK3MIUI/treble/xiaomi-sdm660.dtb')
-    os.chdir(expanduser('~') + '/build/AK3MIUI')
-    os.system(f'zip -r9 {MIUI_FILENAME} * -x .git {MIUI_FILENAME}')
-    print('========== Signing ==========')
-    os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {MIUI_FILENAME} {MIUI_SIGNED_FILENAME}')
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
     hash = hashlib.sha1()
     with open(SIGNED_FILENAME, 'rb') as f:
         for chunk in iter(lambda: f.read(4096), b''):
             hash.update(chunk)
-    miui_hash = hashlib.sha1()
-    with open(MIUI_SIGNED_FILENAME, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b''):
-            miui_hash.update(chunk)
     bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
                       caption=f'✅ Build for {DEVICE} finished in a '
                               f'{build_time.strftime("%-M mins %-S secs")} \\| SHA1: `{hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
-    bot.send_document(chat_id=CHAT_ID, document=open(MIUI_SIGNED_FILENAME, 'rb'),
-                      caption=f'✅ Miui build \\| SHA1: `{miui_hash.hexdigest()}`',
-                      parse_mode=ParseMode.MARKDOWN_V2)
     os.system(f'scp {SIGNED_FILENAME} fedshat@build.ivan1874.dynu.net:~/builds')
-    os.system(f'scp {MIUI_SIGNED_FILENAME} fedshat@build.ivan1874.dynu.net:~/builds')
     os.remove(SIGNED_FILENAME)
     os.remove(FILENAME)
-    os.remove(MIUI_SIGNED_FILENAME)
-    os.remove(MIUI_FILENAME)
 else:
     print('========== Build failed ==========')
     build_time = datetime.fromtimestamp(0, tz=TZ) + (datetime.now(TZ) - TIMESTAMP)
