@@ -48,7 +48,6 @@ def update_tree(p, b):
 
 update_tree('.', 'staging')
 update_tree('../AK3', 'master')
-update_tree('../AK3MIUI', 'miui')
 update_tree('../tools/arm64-gcc', 'master')
 
 commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
