@@ -18,8 +18,7 @@ start_time = time()
 TIMESTAMP = datetime.now()
 
 CHAT_ID = -1001115967921
-FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}.zip'
-SIGNED_FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-signed.zip'
+FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-unsigned.zip'
 COMPILER_STRING = 'GCC 10.x'
 KERNEL_VERSION = 'Alpaca, r16, LTO'
 DEVICE = 'platina'
@@ -47,6 +46,8 @@ def update_tree(p, b):
 update_tree('.', 'staging')
 update_tree('../AK3', 'master')
 update_tree('../tools/arm64-gcc', 'master')
+
+SIGNED_FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
 commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{repo.active_branch.name}:' \
