@@ -51,7 +51,7 @@ SIGNED_FILENAME = f'../AlpacaKernel-r16-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{rep
 
 commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{repo.active_branch.name}:' \
-         f'`[{repo.active_branch.commit.hexsha[:7]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
+         f'`[{repo.active_branch.commit.hexsha[:8]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
          f'`{commit_msg}`'
 bot.send_message(chat_id=CHAT_ID,
                  text=f'⚙️ Build for {DEVICE} started:\n'
