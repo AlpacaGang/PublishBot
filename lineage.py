@@ -81,7 +81,7 @@ if not lineage_exec('mka bacon'):
     #
     #     './build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey '
     #     '--block --backup=true signed-target_files.zip ' + SIGNED_FILENAME)
-    build = glob(f'out/target/product/{DEVICE}/*-{DEVICE}.zip')[0]
+    build = glob(f'out/target/product/{DEVICE}/lineage-17.1-{TIMESTAMP.strftime("%Y%m%d")}-UNOFFICIAL-{DEVICE}.zip')[0]
     os.rename(build, FILENAME)
     delta = int(time() - start_time)
     build_time = f'{delta // 60 // 60} hours {delta // 60 % 60} minutes {delta % 60} seconds'
