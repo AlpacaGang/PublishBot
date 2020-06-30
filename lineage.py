@@ -1,9 +1,9 @@
 import hashlib
 import os
+from datetime import datetime
 from glob import glob
 from os.path import join
 from time import time
-from datetime import datetime
 
 from git import Repo
 from telegram.utils.helpers import escape_markdown
@@ -43,7 +43,9 @@ bot.send_message(CHAT_ID, '⚙️ Syncing main tree...\n')
 os.system('repo sync --force-sync')
 
 bot.send_message(CHAT_ID, '⚙️ Adding FaceUnlock...\n')
-os.system('git clone https://bitbucket.org/syberia-project/external_motorola_faceunlock.git -b 10.0 external/motorola/faceunlock')
+os.system(
+    'git clone https://bitbucket.org/syberia-project/external_motorola_faceunlock.git -b 10.0 external/motorola/faceunlock')
+
 
 def patch(p, link, sha):
     os.chdir(p)
@@ -51,9 +53,11 @@ def patch(p, link, sha):
     os.system(f'git cherry-pick {sha}')
     os.chdir(tree_dir)
 
+
 patch('vendor/lineage', 'https://github.com/neon-os/vendor_lineage', 'a3f5c3ef14bf8af6bd66104cf108271d414b418c')
 patch('frameworks/base', 'https://github.com/neon-os/frameworks_base', 'bc46b8eb130e2b3ce59c4b9adefc028a4459772e')
-patch('packages/apps/Settings', 'https://github.com/neon-os/packages_apps_Settings', '7491139bc25f8b1382ab8691b76ed5523fe1d734')
+patch('packages/apps/Settings', 'https://github.com/neon-os/packages_apps_Settings',
+      '7491139bc25f8b1382ab8691b76ed5523fe1d734')
 
 bot.send_message(CHAT_ID, '⚙️ Syncing device trees...\n')
 bot.send_message(CHAT_ID, f'⚙️ Device tree commit: {update_and_get_tree("device/xiaomi/platina", "lineage-17.x")}\n'
@@ -68,23 +72,25 @@ def lineage_exec(cmd):
 
 
 bot.send_message(CHAT_ID, '⚙️ Building...\n')
-if not lineage_exec('mka target-files-package otatools'):
+if not lineage_exec('mka bacon'):
     bot.send_message(CHAT_ID, '⚙️ Signing...\n')
-    target_files = glob(f'out/target/product/{DEVICE}/obj/PACKAGING/target_files_intermediates/*-target_files-*.zip')[0]
-    lineage_exec(
-        './build/tools/releasetools/sign_target_files_apks -o -d '
-        f'~/.android-certs {target_files} signed-target_files.zip;'
-
-        './build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey '
-        '--block --backup=true signed-target_files.zip ' + SIGNED_FILENAME)
+    # target_files = glob(f'out/target/product/{DEVICE}/obj/PACKAGING/target_files_intermediates/*-target_files-*.zip')[0]
+    # lineage_exec(
+    #     './build/tools/releasetools/sign_target_files_apks -o -d '
+    #     f'~/.android-certs {target_files} signed-target_files.zip;'
+    #
+    #     './build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey '
+    #     '--block --backup=true signed-target_files.zip ' + SIGNED_FILENAME)
+    build = glob(f'out/target/product/{DEVICE}/*-{DEVICE}.zip')[0]
+    os.rename(build, FILENAME)
     delta = int(time() - start_time)
     build_time = f'{delta // 60 // 60} hours {delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(CHAT_ID, f'✅ Build succeed in a {build_time}!')
     uploading_msg: Message = bot.send_message(CHAT_ID, '⚙ Uploading, please wait...')
-    msg: Message = bot.send_file(CHAT_ID, SIGNED_FILENAME, caption='MD5: `Loading...`', parse_mode='md')
+    msg: Message = bot.send_file(CHAT_ID, FILENAME, caption='MD5: `Loading...`', parse_mode='md')
     uploading_msg.delete()
     hash = hashlib.md5()
-    with open(SIGNED_FILENAME, 'rb') as f:
+    with open(FILENAME, 'rb') as f:
         for chunk in iter(lambda: f.read(4096), b''):
             hash.update(chunk)
     msg.edit(f'MD5: `{hash.hexdigest()}`', parse_mode='md')
