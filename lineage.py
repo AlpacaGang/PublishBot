@@ -73,7 +73,7 @@ def lineage_exec(cmd):
 
 bot.send_message(CHAT_ID, '⚙️ Building...\n')
 if not lineage_exec('mka bacon'):
-    bot.send_message(CHAT_ID, '⚙️ Signing...\n')
+    # bot.send_message(CHAT_ID, '⚙️ Signing...\n')
     # target_files = glob(f'out/target/product/{DEVICE}/obj/PACKAGING/target_files_intermediates/*-target_files-*.zip')[0]
     # lineage_exec(
     #     './build/tools/releasetools/sign_target_files_apks -o -d '
