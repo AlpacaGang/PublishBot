@@ -26,6 +26,7 @@ COMMIT = f'[{esc(os.getenv("DRONE_COMMIT_LINK"))}]'\
                f' by {esc(os.getenv("DRONE_COMMIT_AUTHOR", "anonymous"))}'
 REPO = f'[{esc(os.getenv("DRONE_REPO_LINK"))}]({esc(os.getenv("DRONE_REPO"))})'
 if args.ok:
+    print(f'✅ Pipeline {esc(BUILD_NUMBER)} for {REPO} (commit {COMMIT}) succeed!')
     bot.send_message(chat_id=CHAT_ID, text=f'✅ Pipeline {esc(BUILD_NUMBER)} for '
                                            f'{REPO} (commit {COMMIT}) succeed!',
                      parse_mode='MarkdownV2')
