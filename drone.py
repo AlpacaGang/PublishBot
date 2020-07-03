@@ -2,7 +2,10 @@ import telegram
 import argparse
 import os
 
-esc = telegram.utils.helpers.escape_markdown
+
+def esc(text, entity_type=None):
+    return telegram.utils.helpers.escape_markdown(text, 2, entity_type)
+
 
 CHAT_ID = os.getenv("CHAT_ID")
 if not CHAT_ID.startswith("-100"):
