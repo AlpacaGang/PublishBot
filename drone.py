@@ -25,11 +25,10 @@ args = parse_args()
 
 BUILD_NUMBER = os.getenv("DRONE_BUILD_NUMBER", "<unknown>")
 COMMIT = f'<a href="{esc(os.getenv("DRONE_COMMIT_LINK"))}">'\
-               f'{esc(os.getenv("DRONE_COMMIT_SHA", "0000000")[:7])}</a>'\
+               f'{esc(os.getenv("DRONE_COMMIT_SHA")[:7])}</a>'\
                f' by {esc(os.getenv("DRONE_COMMIT_AUTHOR", "anonymous"))}'
 REPO = f'<a href="{esc(os.getenv("DRONE_REPO_LINK"))}">{esc(os.getenv("DRONE_REPO"))}</a>'
 if args.ok:
-    print(f'✅ Pipeline {esc(BUILD_NUMBER)} for {REPO} (commit {COMMIT}) succeed!')
     bot.send_message(chat_id=CHAT_ID, text=f'✅ Pipeline {esc(BUILD_NUMBER)} for '
                                            f'{REPO} (commit {COMMIT}) succeed!',
                      parse_mode='HTML')
