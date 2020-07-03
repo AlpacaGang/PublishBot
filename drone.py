@@ -2,6 +2,8 @@ import telegram
 import argparse
 import os
 
+esc = telegram.utils.helpers.escape_markdown
+
 CHAT_ID = os.getenv("CHAT_ID")
 if not CHAT_ID.startswith("-100"):
     CHAT_ID = f"-100{CHAT_ID}"
@@ -19,15 +21,15 @@ bot = telegram.Bot(token=os.getenv("BOT_TOKEN"))
 args = parse_args()
 
 BUILD_NUMBER = os.getenv("DRONE_BUILD_NUMBER", "<unknown>")
-COMMIT = f'[{os.getenv("DRONE_COMMIT_LINK")}]'\
-               f'({os.getenv("DRONE_COMMIT_SHA", "0000000")[:7]})'\
-               f' by {os.getenv("DRONE_COMMIT_AUTHOR", "anonymous")}'
-REPO = f'[{os.getenv("DRONE_REPO_LINK")}]({os.getenv("DRONE_REPO")})'
+COMMIT = f'[{esc(os.getenv("DRONE_COMMIT_LINK"))}]'\
+               f'({esc(os.getenv("DRONE_COMMIT_SHA", "0000000")[:7])})'\
+               f' by {esc(os.getenv("DRONE_COMMIT_AUTHOR", "anonymous"))}'
+REPO = f'[{esc(os.getenv("DRONE_REPO_LINK"))}]({esc(os.getenv("DRONE_REPO"))})'
 if args.ok:
-    bot.send_message(chat_id=CHAT_ID, text=f'✅ Pipeline {BUILD_NUMBER} for '
+    bot.send_message(chat_id=CHAT_ID, text=f'✅ Pipeline {esc(BUILD_NUMBER)} for '
                                            f'{REPO} (commit {COMMIT}) succeed!',
                      parse_mode='MarkdownV2')
 else:
-    bot.send_message(chat_id=CHAT_ID, text=f'❌ Pipeline {BUILD_NUMBER} for '
+    bot.send_message(chat_id=CHAT_ID, text=f'❌ Pipeline {esc(BUILD_NUMBER)} for '
                                            f'{REPO} (commit {COMMIT}) failed!',
                      parse_mode='MarkdownV2')
