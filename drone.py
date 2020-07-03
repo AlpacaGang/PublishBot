@@ -22,8 +22,8 @@ REPO = f'<a href="{esc(os.getenv("DRONE_REPO_LINK"))}">{esc(os.getenv("DRONE_REP
 if OK:
     bot.send_message(chat_id=CHAT_ID, text=f'✅ Pipeline {BUILD_NUMBER} for '
                                            f'{REPO} (commit {COMMIT}) succeed!',
-                     parse_mode='HTML')
+                     parse_mode='HTML', disable_web_page_preview=True)
 else:
     bot.send_message(chat_id=CHAT_ID, text=f'❌ Pipeline {BUILD_NUMBER} for '
                                            f'{REPO} (commit {COMMIT}) failed!',
-                     parse_mode='HTML')
+                     parse_mode='HTML', disable_web_page_preview=True)
