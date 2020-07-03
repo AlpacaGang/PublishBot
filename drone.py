@@ -17,7 +17,7 @@ bot = telegram.Bot(token=os.getenv("BOT_TOKEN"))
 
 DRONE_LINK = 'https://drone.vanutp.dev/'
 BUILD_NUMBER = esc(os.getenv("DRONE_BUILD_NUMBER"))
-BUILD_LINK = f'<a href="{DRONE_LINK}{esc(os.getenv("DRONE_REPO"))}/{BUILD_NUMBER}>{BUILD_NUMBER}</a>'
+BUILD_LINK = f'<a href="{DRONE_LINK}{esc(os.getenv("DRONE_REPO"))}/{BUILD_NUMBER}">{BUILD_NUMBER}</a>'
 COMMIT = f'<a href="{esc(os.getenv("DRONE_COMMIT_LINK"))}">'\
                f'{esc(os.getenv("DRONE_COMMIT_SHA")[:7])}</a>'\
                f' by {esc(os.getenv("DRONE_COMMIT_AUTHOR_NAME"))}'
