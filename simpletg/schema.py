@@ -24,10 +24,10 @@ class ParseMode:
 
 
 methods: Dict[str, Dict[str, Argument]] = {
-    'get_me': {
+    'getMe': {
         'args': {}
     },
-    'send_message': {
+    'sendMessage': {
         'args': {
             #                required type
             'chat_id': Argument(True, int),
