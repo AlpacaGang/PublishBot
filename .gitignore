@@ -109,6 +109,7 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/python
 .idea/
+.vscode/
 secure.py
 venv/
 kernel_xiaomi_platina/
