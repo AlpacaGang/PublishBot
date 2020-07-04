@@ -14,7 +14,7 @@ class TelegramAPI:
 
     def _check_args(self, method, *args, **kwargs):
         used = {}
-        sargs = self.schema[method]['args']
+        sargs = schema.methods[method]['args']
         for pa, sa in zip(args, sargs):
             if sa in kwargs:
                 raise TypeError(f'{method} got multiple values for {sa}')
