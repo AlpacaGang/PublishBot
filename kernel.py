@@ -43,7 +43,7 @@ def update_tree(p, b):
     os.chdir(tree_dir)
 
 
-update_tree('.', 'staging')
+update_tree('.', 'kernel.lnx.4.4.r38-rel')
 update_tree('../AK3', 'master')
 update_tree('../tools/arm64-gcc', 'master')
 
