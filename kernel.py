@@ -89,7 +89,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
                       caption=f'✅ Build for {DEVICE} finished in a '
                               f'{build_time} \\| SHA1: `{hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
-    os.system(f'scp {SIGNED_FILENAME} fedshat@build.ivan1874.dynu.net:~/builds')
+    os.system(f'scp {SIGNED_FILENAME} fedshat@{os.environ.get("IP")}:~/builds')
     os.remove(SIGNED_FILENAME)
     os.remove(FILENAME)
 else:
