@@ -18,9 +18,9 @@ start_time = time()
 TIMESTAMP = datetime.now()
 
 CHAT_ID = -1001115967921
-FILENAME = f'../AlpacaKernel-r19-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-unsigned.zip'
+FILENAME = f'../platina-Kernel-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-unsigned.zip'
 COMPILER_STRING = 'GCC 10.x'
-KERNEL_VERSION = 'Alpaca, r19, LTO'
+KERNEL_VERSION = ''
 DEVICE = 'platina'
 DEFCONFIG = 'platina_defconfig'
 CROSS_COMPILE = expanduser('~') + '/build/tools/arm64-gcc/bin/aarch64-elf-'
@@ -47,7 +47,7 @@ update_tree('.', 'kernel.lnx.4.4.r38-rel')
 update_tree('../AK3', 'master')
 update_tree('../tools/arm64-gcc', 'master')
 
-SIGNED_FILENAME = f'../AlpacaKernel-r19-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
+SIGNED_FILENAME = f'../platina-Kernel-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
 commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{repo.active_branch.name}:' \
