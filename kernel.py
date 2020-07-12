@@ -71,7 +71,7 @@ with open('out/.config', 'w') as f:
 print('========== Building kernel ==========')
 if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}'):
     print('========== Build succeed ==========')
-    os.rename('out/arch/arm64/boot/Image.gz-dtb', expanduser('~') + '/build/AK3/kernel/Image.gz-dtb')
+    os.rename('out/arch/arm64/boot/Image.gz-dtb', expanduser('~') + '/build/AK3/Image.gz-dtb')
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
