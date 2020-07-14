@@ -54,11 +54,11 @@ commit = f'`{repo.active_branch.name}:' \
          f'`[{repo.active_branch.commit.hexsha[:8]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
          f'`{commit_msg}`'
 bot.send_message(chat_id=CHAT_ID,
-                 text=f'⚙️ Build for {DEVICE} started:\n'
-                      f'Compiler: `{COMPILER_STRING}`\n'
-                      f'Device: `{DEVICE}`\n'
-                      f'Kernel: `{KERNEL_VERSION}`\n'
-                      f'Commit: {commit}',
+                 text=f'⚙️ *Build for {DEVICE} started:*\n'
+                      f'*Compiler:* `{COMPILER_STRING}`\n'
+                      f'*Device:* `{DEVICE}`\n'
+                      f'*Kernel:* `{KERNEL_VERSION}`\n'
+                      f'*Commit:* {commit}',
                  parse_mode=ParseMode.MARKDOWN_V2, disable_web_page_preview=True)
 if os.path.isfile('.config'):
     os.remove('.config')
@@ -84,7 +84,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
             hash.update(chunk)
     bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
                       caption=f'✅ Build for {DEVICE} finished in a '
-                              f'{build_time} \\| SHA1: `{hash.hexdigest()}`',
+                              f'{build_time} \\| *SHA1:* `{hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
     os.system(f'scp {SIGNED_FILENAME} fedshat@{os.environ.get("IP")}:~/builds')
     os.remove(SIGNED_FILENAME)
