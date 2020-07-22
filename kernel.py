@@ -39,17 +39,18 @@ tree_dir = os.getcwd()
 def update_tree(p, b):
     os.chdir(p)
     os.system('git fetch --all')
-    os.system('git reset --hard origin/' + b)
+    os.system('git reset --hard ' + b)
     os.chdir(tree_dir)
 
 
-update_tree('.', 'kernel.lnx.4.4.r38-rel')
-update_tree('../AK3', 'master')
-update_tree('../tools/arm64-gcc', 'master')
+update_tree('.', 'origin/kernel.lnx.4.4.r38-rel')
+update_tree('../AK3', 'origin/master')
+update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
 SIGNED_FILENAME = f'../platina-Kernel-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
-commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
+commit_msg = escape_markdown(
+    repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{repo.active_branch.name}:' \
          f'`[{repo.active_branch.commit.hexsha[:8]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
          f'`{commit_msg}`'
@@ -67,11 +68,13 @@ os.system(f'make O=out ARCH=arm64 {DEFCONFIG}')
 print('========== Building kernel ==========')
 if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}'):
     print('========== Build succeed ==========')
-    os.rename('out/arch/arm64/boot/Image.gz-dtb', expanduser('~') + '/build/AK3/Image.gz-dtb')
+    os.rename('out/arch/arm64/boot/Image.gz-dtb',
+              expanduser('~') + '/build/AK3/Image.gz-dtb')
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
-    os.system(f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
+    os.system(
+        f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
     delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     hash = hashlib.sha1()
