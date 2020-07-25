@@ -1,6 +1,7 @@
 import hashlib
 import multiprocessing
 import os
+import subprocess
 from datetime import datetime
 from os.path import expanduser
 from time import time
@@ -19,11 +20,12 @@ TIMESTAMP = datetime.now()
 
 CHAT_ID = -1001115967921
 FILENAME = f'../AlpacaKernel-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-unsigned.zip'
-COMPILER_STRING = 'GCC 10.x'
 KERNEL_VERSION = f'Alpaca, {TIMESTAMP.strftime("%Y%m%d")}'
 DEVICE = 'platina'
 DEFCONFIG = 'platina_defconfig'
 CROSS_COMPILE = expanduser('~') + '/build/tools/arm64-gcc/bin/aarch64-elf-'
+COMPILER_STRING = subprocess.Popen(
+    ['bash', '-c', f'({CROSS_COMPILE}gcc --version | head -n 1 | perl -pe \'s/\((?:http|git).*?\)//gs\' | sed -e \'s/  */ /g\' -e \'s/[[:space:]]*$//\')'], stdout=subprocess.PIPE).communicate()[0].decode()
 REPO = 'FedorShatokhin2005/msm-4.4'
 NPROC = multiprocessing.cpu_count()
 
