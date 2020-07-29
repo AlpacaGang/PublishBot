@@ -45,8 +45,6 @@ def update_tree(p, b):
     os.chdir(tree_dir)
 
 
-update_tree('.', 'origin/kernel.lnx.4.4.r38-rel')
-update_tree('../AK3', 'origin/master')
 update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
 SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
