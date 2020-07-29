@@ -24,8 +24,6 @@ KERNEL_VERSION = f'Alpaca, {TIMESTAMP.strftime("%Y%m%d")}'
 DEVICE = 'platina'
 DEFCONFIG = 'platina_defconfig'
 CROSS_COMPILE = expanduser('~') + '/build/tools/arm64-gcc/bin/aarch64-elf-'
-COMPILER_STRING = subprocess.Popen(
-    ['bash', '-c', f'({CROSS_COMPILE}gcc --version | head -n 1 | perl -pe \'s/\((?:http|git).*?\)//gs\' | sed -e \'s/  */ /g\' -e \'s/[[:space:]]*$//\')'], stdout=subprocess.PIPE).communicate()[0].decode()[:-1]
 REPO = 'FedorShatokhin2005/msm-4.4'
 NPROC = multiprocessing.cpu_count()
 
@@ -47,6 +45,8 @@ def update_tree(p, b):
 
 update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
+COMPILER_STRING = subprocess.Popen(
+    ['bash', '-c', f'({CROSS_COMPILE}gcc --version | head -n 1 | perl -pe \'s/\((?:http|git).*?\)//gs\' | sed -e \'s/  */ /g\' -e \'s/[[:space:]]*$//\')'], stdout=subprocess.PIPE).communicate()[0].decode()[:-1]
 SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
 commit_msg = escape_markdown(
