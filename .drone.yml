@@ -1,0 +1,34 @@
+---
+kind: pipeline
+name: python-latest
+
+steps:
+  - name: notify-start
+    image: python:latest
+    environment:
+      BOT_TOKEN:
+        from_secret: bot_token
+      CHAT_ID: -1001339045129
+    commands:
+      - git clone https://github.com/AlpacaGang/PublishBot
+      - pip install -r PublishBot/requirements-drone.txt
+      - python PublishBot/drone.py --start
+  - name: lint
+    image: python:latest
+    commands:
+      - pip install -r requirements.txt
+      - pip install pylint
+      - pylint $(find . -path ./PublishBot -prune -o -name '*.py' -print)
+  - name: notify
+    image: python:latest
+    environment:
+      BOT_TOKEN:
+        from_secret: bot_token
+      CHAT_ID: -1001339045129
+    commands:
+      - pip install -r PublishBot/requirements-drone.txt
+      - python PublishBot/drone.py
+    when:
+      status:
+      - failure
+      - success
