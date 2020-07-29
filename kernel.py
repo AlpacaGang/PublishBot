@@ -56,8 +56,9 @@ commit_msg = escape_markdown(
 commit = f'`{repo.active_branch.name}:' \
          f'`[{repo.active_branch.commit.hexsha[:8]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
          f'`{commit_msg}`'
+build_url = escape_markdown(os.getenv("CIRCLE_BUILD_URL"), version=2)
 bot.send_message(chat_id=CHAT_ID,
-                 text=f'⚙️ *Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({os.environ.get("CIRCLE_BUILD_URL")}) for {DEVICE} started:*\n'
+                 text=f'⚙️ *Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for {DEVICE} started:*\n'
                       f'*Compiler:* `{COMPILER_STRING}`\n'
                       f'*Device:* `{DEVICE}`\n'
                       f'*Kernel:* `{KERNEL_VERSION}`\n'
@@ -84,7 +85,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
         for chunk in iter(lambda: f.read(4096), b''):
             hash.update(chunk)
     bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
-                      caption=f'✅ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({os.environ.get("CIRCLE_BUILD_URL")}) for {DEVICE} finished in a '
+                      caption=f'✅ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for {DEVICE} finished in a '
                               f'{build_time} \\| *SHA1:* `{hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
     os.remove(SIGNED_FILENAME)
@@ -94,5 +95,5 @@ else:
     delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
-                     text=f'❌ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({os.environ.get("CIRCLE_BUILD_URL")}) for {DEVICE} failed in a {build_time}!')
+                     text=f'❌ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for {DEVICE} failed in a {build_time}!')
 os.chdir(tree_dir)
