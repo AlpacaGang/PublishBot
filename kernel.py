@@ -49,7 +49,7 @@ update_tree('.', 'origin/kernel.lnx.4.4.r38-rel')
 update_tree('../AK3', 'origin/master')
 update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
-SIGNED_FILENAME = f'../AlpacaKernel-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
+SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
 commit_msg = escape_markdown(
     repo.active_branch.commit.message.split("\n")[0], version=2)
@@ -57,7 +57,7 @@ commit = f'`{repo.active_branch.name}:' \
          f'`[{repo.active_branch.commit.hexsha[:8]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
          f'`{commit_msg}`'
 bot.send_message(chat_id=CHAT_ID,
-                 text=f'⚙️ *Build for {DEVICE} started:*\n'
+                 text=f'⚙️ *Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({os.environ.get("CIRCLE_BUILD_URL")}) for {DEVICE} started:*\n'
                       f'*Compiler:* `{COMPILER_STRING}`\n'
                       f'*Device:* `{DEVICE}`\n'
                       f'*Kernel:* `{KERNEL_VERSION}`\n'
@@ -84,7 +84,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
         for chunk in iter(lambda: f.read(4096), b''):
             hash.update(chunk)
     bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
-                      caption=f'✅ Build for {DEVICE} finished in a '
+                      caption=f'✅ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({os.environ.get("CIRCLE_BUILD_URL")}) for {DEVICE} finished in a '
                               f'{build_time} \\| *SHA1:* `{hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
     os.remove(SIGNED_FILENAME)
@@ -94,5 +94,5 @@ else:
     delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
-                     text=f'❌ Build for {DEVICE} failed in a {build_time}!')
+                     text=f'❌ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({os.environ.get("CIRCLE_BUILD_URL")}) for {DEVICE} failed in a {build_time}!')
 os.chdir(tree_dir)
