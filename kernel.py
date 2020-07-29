@@ -76,7 +76,7 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
     os.system(
-        f'java -jar {ZIPSIGNER_PATH} {X508_PATH} {PK8_PATH} {FILENAME} {SIGNED_FILENAME}')
+        f'java -jar {ZIPSIGNER_PATH} {FILENAME} {SIGNED_FILENAME}')
     delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     hash = hashlib.sha1()
@@ -87,8 +87,6 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
                       caption=f'✅ Build for {DEVICE} finished in a '
                               f'{build_time} \\| *SHA1:* `{hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
-    os.system(
-        f'scp {SIGNED_FILENAME} fedshat@{os.environ.get("IP")}:/media/raid/fedshatcloud')
     os.remove(SIGNED_FILENAME)
     os.remove(FILENAME)
 else:
