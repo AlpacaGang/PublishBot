@@ -20,9 +20,9 @@ escape_html () {
 GITEA="https://git.vanutp.dev"
 GITHUB="https://github.com"
 if [[ $DRONE_GIT_HTTP_URL == $GITEA* ]]; then
-    DRONE_LINK="https://drone.vanutp.dev"
-elif [[ $DRONE_GIT_HTTP_URL == $GITHUB* ]]; then
     DRONE_LINK="https://drone_gitea.vanutp.dev"
+elif [[ $DRONE_GIT_HTTP_URL == $GITHUB* ]]; then
+    DRONE_LINK="https://drone.vanutp.dev"
 else
     equals="============"
     echo -e "$equals\nUnknown Git hosting ($GITEA and $GITHUB are only supported)\n$equals"
