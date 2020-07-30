@@ -46,7 +46,7 @@ def update_tree(p, b):
 
 update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
-COMPILER_STRING = subprocess.Popen(['{CROSS_COMPILE}gcc', '--version'], stdout=subprocess.PIPE)\
+COMPILER_STRING = subprocess.Popen([f'{CROSS_COMPILE}gcc', '--version'], stdout=subprocess.PIPE)\
         .communicate()[0].decode()[:-1]
 COMPILER_STRING = COMPILER_STRING.split('\n')[0]
 SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-' \
