@@ -10,15 +10,13 @@ steps:
         from_secret: bot_token
       CHAT_ID: -1001339045129
     commands:
-      - git clone https://github.com/AlpacaGang/PublishBot
-      - pip install -r PublishBot/requirements-drone.txt
-      - python PublishBot/drone.py --start
+      - ./drone.sh --start
   - name: lint
     image: python:latest
     commands:
       - pip install -r requirements.txt
       - pip install pylint
-      - pylint $(find . -path ./PublishBot -prune -o -name '*.py' -print)
+      - pylint $(find . -name "*.py")
   - name: notify
     image: python:latest
     environment:
@@ -26,8 +24,7 @@ steps:
         from_secret: bot_token
       CHAT_ID: -1001339045129
     commands:
-      - pip install -r PublishBot/requirements-drone.txt
-      - python PublishBot/drone.py
+      - ./drone.sh
     when:
       status:
       - failure
