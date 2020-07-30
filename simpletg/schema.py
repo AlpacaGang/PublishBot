@@ -16,9 +16,9 @@ class ParseMode:
         name = name.lower()
         if name in ['md', 'markdown']:
             return cls.Markdown
-        elif name in ['md2', 'mdv2', 'markdownv2', 'markdown2']:
+        if name in ['md2', 'mdv2', 'markdownv2', 'markdown2']:
             return cls.MarkdownV2
-        elif name in ['html']:
+        if name in ['html']:
             return cls.HTML
         raise ValueError(f'unknown parse mode: {name}')
 

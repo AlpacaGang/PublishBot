@@ -12,7 +12,8 @@ class TelegramAPI:
     def __init__(self, token):
         self.token = token
 
-    def _check_args(self, method, *args, **kwargs):
+    @staticmethod
+    def _check_args(method, *args, **kwargs):
         used = {}
         sargs = schema.methods[method]['args']
         for pa, sa in zip(args, sargs):
@@ -34,8 +35,7 @@ class TelegramAPI:
         res = rq.post(API_URL.format(self.token, method), data=data).json()
         if not res['ok']:
             raise TelegramError(res['description'])
-        else:
-            return res['result']
+        return res['result']
 
     def get_me(self):
         return self('get_me')

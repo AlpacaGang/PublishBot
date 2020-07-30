@@ -5,3 +5,4 @@ pysocks
 gitpython
 telethon
 cryptg
+requests

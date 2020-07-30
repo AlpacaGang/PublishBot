@@ -1,6 +1,7 @@
 import hashlib
 import multiprocessing
 import os
+import sys
 import subprocess
 from datetime import datetime
 from os.path import expanduser
@@ -45,18 +46,20 @@ def update_tree(p, b):
 
 update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
-COMPILER_STRING = subprocess.Popen(
-    ['bash', '-c', f'({CROSS_COMPILE}gcc --version | head -n 1 | perl -pe \'s/\((?:http|git).*?\)//gs\' | sed -e \'s/  */ /g\' -e \'s/[[:space:]]*$//\')'], stdout=subprocess.PIPE).communicate()[0].decode()[:-1]
-SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
+COMPILER_STRING = subprocess.Popen(['{CROSS_COMPILE}gcc', '--version'], stdout=subprocess.PIPE)\
+        .communicate()[0].decode()[:-1]
+COMPILER_STRING = COMPILER_STRING.split('\n')[0]
+SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-' \
+                  f'{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
-commit_msg = escape_markdown(
-    repo.active_branch.commit.message.split("\n")[0], version=2)
+commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{repo.active_branch.name}:' \
-         f'`[{repo.active_branch.commit.hexsha[:8]}](https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
+         f'`[{repo.active_branch.commit.hexsha[:8]}]' \
+         f'(https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
          f'`{commit_msg}`'
 build_url = escape_markdown(os.getenv("CIRCLE_BUILD_URL"), version=2)
 bot.send_message(chat_id=CHAT_ID,
-                 text=f'⚙️ *Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for {DEVICE} started:*\n'
+                 text=f'⚙️ *Build [\\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for {DEVICE} started:*\n'
                       f'*Compiler:* `{COMPILER_STRING}`\n'
                       f'*Device:* `{DEVICE}`\n'
                       f'*Kernel:* `{KERNEL_VERSION}`\n'
@@ -78,13 +81,13 @@ if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}
         f'java -jar {ZIPSIGNER_PATH} {FILENAME} {SIGNED_FILENAME}')
     delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
-    hash = hashlib.sha1()
+    file_hash = hashlib.sha1()
     with open(SIGNED_FILENAME, 'rb') as f:
         for chunk in iter(lambda: f.read(4096), b''):
-            hash.update(chunk)
+            file_hash.update(chunk)
     bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
-                      caption=f'✅ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for {DEVICE} finished in a '
-                              f'{build_time} \\| *SHA1:* `{hash.hexdigest()}`',
+                      caption=f'✅ Build [\\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for '
+                              f'{DEVICE} finished in a {build_time} \\| *SHA1:* `{file_hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
     os.remove(SIGNED_FILENAME)
     os.remove(FILENAME)
@@ -93,5 +96,7 @@ else:
     delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
-                     text=f'❌ Build [\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for {DEVICE} failed in a {build_time}!')
+                     text=f'❌ Build [\\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for '
+                          f'{DEVICE} failed in a {build_time}!')
+    sys.exit(1)
 os.chdir(tree_dir)

@@ -1,6 +1,7 @@
-import simpletg as stg
 import os
 import sys
+
+import simpletg as stg
 
 
 def esc(text):
@@ -25,13 +26,13 @@ REPO = f'<a href="{esc(os.getenv("DRONE_REPO_LINK"))}">{esc(os.getenv("DRONE_REP
 
 if '--start' in sys.argv:
     bot.sendMessage(chat_id=CHAT_ID, text=f'⚙️ Pipeline {BUILD_LINK} for {REPO}'
-                                           f' (commit {COMMIT}) started.',
+                                          f' (commit {COMMIT}) started.',
                     parse_mode='HTML', disable_web_page_preview=True)
 elif OK:
     bot.sendMessage(chat_id=CHAT_ID, text=f'✅ Pipeline {BUILD_LINK} for '
-                                           f'{REPO} (commit {COMMIT}) succeed!',
+                                          f'{REPO} (commit {COMMIT}) succeed!',
                     parse_mode='HTML', disable_web_page_preview=True)
 else:
     bot.sendMessage(chat_id=CHAT_ID, text=f'❌ Pipeline {BUILD_LINK} for '
-                                           f'{REPO} (commit {COMMIT}) failed!',
+                                          f'{REPO} (commit {COMMIT}) failed!',
                     parse_mode='HTML', disable_web_page_preview=True)
