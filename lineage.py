@@ -43,8 +43,8 @@ bot.send_message(CHAT_ID, '⚙️ Syncing main tree...\n')
 os.system('repo sync --force-sync')
 
 bot.send_message(CHAT_ID, '⚙️ Adding FaceUnlock...\n')
-os.system(
-    'git clone https://bitbucket.org/syberia-project/external_motorola_faceunlock.git -b 10.0 external/motorola/faceunlock')
+os.system('git clone https://bitbucket.org/syberia-project/external_motorola_faceunlock.git '
+          '-b 10.0 external/motorola/faceunlock')
 
 
 def patch(p, link, sha):

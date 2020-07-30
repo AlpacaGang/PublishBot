@@ -1,10 +1,11 @@
 import json
 
 from flask import Flask, request
-from secure import BOT_TOKEN, PROXY
 from telegram import ParseMode
 from telegram.ext import Updater
 from telegram.utils.helpers import escape
+
+from secure import BOT_TOKEN, PROXY  # pylint: disable=E0401
 
 app = Flask(__name__)
 
@@ -41,9 +42,10 @@ def trigger(chat_id, options):
             commits = ':\n\n' + '\n'.join(commits)
         else:
             commits = ''
+        commits_word = 'commit' if len(data['commits']) == 1 else 'commits'
+        ref = f'{escape(data["repository"]["full_name"])}:{escape(data["ref"].split("/")[-1])}'
         bot.send_message(chat_id=chat_id,
-                         text=f'🔨 {len(data["commits"])} new {"commit" if len(data["commits"]) == 1 else "commits"} '
-                              f'to <b>{escape(data["repository"]["full_name"])}:{escape(data["ref"].split("/")[-1])}</b>' + commits,
+                         text=f'🔨 {len(data["commits"])} new {commits_word} to <b>{ref}</b>' + commits,
                          parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     return 'OK'
 

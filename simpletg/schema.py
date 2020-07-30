@@ -2,9 +2,9 @@ from typing import Dict
 
 
 class Argument:
-    def __init__(self, required: bool, type: type):
+    def __init__(self, required: bool, arg_type: type):
         self.required = bool(required)
-        self.type = type
+        self.type = arg_type
 
 
 class ParseMode:
