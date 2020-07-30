@@ -11,7 +11,7 @@ send_message() {
 
 escape_html () {
     local s
-    s=${1//&/&amp;}
+    s=${@//&/&amp;}
     s=${s//</&lt;}
     s=${s//>/&gt;}
     echo -n $s
