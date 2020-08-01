@@ -17,12 +17,7 @@ TIMESTAMP = datetime.now()
 CHAT_ID = -1001235981203
 DEVICE = 'platina'
 
-INIT = False
-
 if '-i' in sys.argv:
-    INIT = True
-
-if INIT:
     os.system('repo init -u git://github.com/LineageOS/android.git -b lineage-17.1')
     os.system('git clone https: // github.com/PlatinaDevsSDM660/android_device_xiaomi_sdm660-common'
               'device/xiaomi/sdm660-common')
