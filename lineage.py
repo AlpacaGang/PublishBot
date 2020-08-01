@@ -65,7 +65,7 @@ bot.send_message(CHAT_ID, f'⚙️ **Device tree commit:** {update_and_get_tree(
                           f'{update_and_get_tree("device/xiaomi/sdm660-common", "lineage-17.x")}\n'
                           f'  **Vendor tree commit:** {update_and_get_tree("vendor/xiaomi/platina", "master")}\n'
                           f'  **Common vendor tree commit:** '
-                          f'{update_and_get_tree("vendor/xiaomi/sdm660-common", "eas")}\n'
+                          f'{update_and_get_tree("vendor/xiaomi/sdm660-common", "lineage-17.x")}\n'
                           f'  **Kernel commit:** '
                           f'{update_and_get_tree("kernel/xiaomi/platina", "kernel.lnx.4.4.r38-rel")}')
 
