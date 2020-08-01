@@ -18,10 +18,13 @@ DEVICE = 'platina'
 
 tree_dir = os.getcwd()
 
-FILENAME = join(tree_dir, f'../lineage-17.1-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-UNOFFICIAL-platina-unsigned.zip')
-SIGNED_FILENAME = join(tree_dir, f'../lineage-17.1-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-UNOFFICIAL-platina.zip')
+FILENAME = join(
+    tree_dir, f'../lineage-17.1-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-UNOFFICIAL-platina-unsigned.zip')
+SIGNED_FILENAME = join(
+    tree_dir, f'../lineage-17.1-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-UNOFFICIAL-platina.zip')
 
-bot = TelegramClient('bot', int(os.environ['API_ID']), os.environ['API_HASH']).start(bot_token=os.environ['TOKEN'])
+bot = TelegramClient('bot', int(os.environ['API_ID']), os.environ['API_HASH']).start(
+    bot_token=os.environ['TOKEN'])
 
 
 def update_and_get_tree(s, branch):
@@ -30,7 +33,8 @@ def update_and_get_tree(s, branch):
     os.system('git reset --hard origin/' + branch)
     repo = Repo('.')
 
-    commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0])
+    commit_msg = escape_markdown(
+        repo.active_branch.commit.message.split("\n")[0])
     res = f'`{repo.active_branch.name}:' \
           f'`{repo.active_branch.commit.hexsha[:7]}\n' \
           f'`{commit_msg}`'
@@ -54,8 +58,10 @@ def patch(p, link, sha):
     os.chdir(tree_dir)
 
 
-patch('vendor/lineage', 'https://github.com/neon-os/vendor_lineage', 'a3f5c3ef14bf8af6bd66104cf108271d414b418c')
-patch('frameworks/base', 'https://github.com/neon-os/frameworks_base', 'bc46b8eb130e2b3ce59c4b9adefc028a4459772e')
+patch('vendor/lineage', 'https://github.com/neon-os/vendor_lineage',
+      'a3f5c3ef14bf8af6bd66104cf108271d414b418c')
+patch('frameworks/base', 'https://github.com/neon-os/frameworks_base',
+      'bc46b8eb130e2b3ce59c4b9adefc028a4459772e')
 patch('packages/apps/Settings', 'https://github.com/neon-os/packages_apps_Settings',
       '7491139bc25f8b1382ab8691b76ed5523fe1d734')
 
@@ -85,13 +91,16 @@ if not lineage_exec('mka bacon'):
     #
     #     './build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey '
     #     '--block --backup=true signed-target_files.zip ' + SIGNED_FILENAME)
-    build = glob(f'out/target/product/{DEVICE}/lineage-17.1-{TIMESTAMP.strftime("%Y%m%d")}-UNOFFICIAL-{DEVICE}.zip')[0]
+    build = glob(
+        f'out/target/product/{DEVICE}/lineage-17.1-{TIMESTAMP.strftime("%Y%m%d")}-UNOFFICIAL-{DEVICE}.zip')[0]
     os.rename(build, FILENAME)
     delta = int(time() - start_time)
     build_time = f'{delta // 60 // 60} hours {delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(CHAT_ID, f'✅ Build succeed in a {build_time}!')
-    uploading_msg: Message = bot.send_message(CHAT_ID, '⚙ Uploading, please wait...')
-    msg: Message = bot.send_file(CHAT_ID, FILENAME, caption='MD5: `Loading...`', parse_mode='md')
+    uploading_msg: Message = bot.send_message(
+        CHAT_ID, '⚙ Uploading, please wait...')
+    msg: Message = bot.send_file(
+        CHAT_ID, FILENAME, caption='MD5: `Loading...`', parse_mode='md')
     uploading_msg.delete()
     file_hash = hashlib.md5()
     with open(FILENAME, 'rb') as f:
