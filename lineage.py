@@ -86,7 +86,7 @@ patch('packages/apps/Settings', 'https://github.com/neon-os/packages_apps_Settin
       '7491139bc25f8b1382ab8691b76ed5523fe1d734')
 
 bot.send_message(CHAT_ID, '⚙️ Syncing device trees...\n')
-bot.send_message(CHAT_ID, f'⚙️ **Device tree commit:** {update_and_get_tree("device/xiaomi/platina", "origin/lineage-17.x")}\n'
+bot.send_message(CHAT_ID, f'⚙️ **Device tree commit:** {update_and_get_tree("device/xiaomi/platina", "origin/lineage-17.x")}\n'  # pylint: disable=line-too-long
                           f'  **Common device tree commit:** '
                           f'{update_and_get_tree("device/xiaomi/sdm660-common", "origin/lineage-17.x")}\n'
                           f'  **Vendor tree commit:** {update_and_get_tree("vendor/xiaomi/platina", "origin/master")}\n'
