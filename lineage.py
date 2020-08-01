@@ -50,7 +50,7 @@ bot = TelegramClient('bot', int(os.environ['API_ID']), os.environ['API_HASH']).s
 def update_and_get_tree(s, branch):
     os.chdir(s)
     os.system('git fetch --all')
-    os.system('git reset --hard origin/' + branch)
+    os.system('git reset --hard ' + branch)
     repo = Repo('.')
 
     commit_msg = escape_markdown(
@@ -86,14 +86,16 @@ patch('packages/apps/Settings', 'https://github.com/neon-os/packages_apps_Settin
       '7491139bc25f8b1382ab8691b76ed5523fe1d734')
 
 bot.send_message(CHAT_ID, '⚙️ Syncing device trees...\n')
-bot.send_message(CHAT_ID, f'⚙️ **Device tree commit:** {update_and_get_tree("device/xiaomi/platina", "lineage-17.x")}\n'
+bot.send_message(CHAT_ID, f'⚙️ **Device tree commit:** {update_and_get_tree("device/xiaomi/platina", "origin/lineage-17.x")}\n'
                           f'  **Common device tree commit:** '
-                          f'{update_and_get_tree("device/xiaomi/sdm660-common", "lineage-17.x")}\n'
-                          f'  **Vendor tree commit:** {update_and_get_tree("vendor/xiaomi/platina", "master")}\n'
+                          f'{update_and_get_tree("device/xiaomi/sdm660-common", "origin/lineage-17.x")}\n'
+                          f'  **Vendor tree commit:** {update_and_get_tree("vendor/xiaomi/platina", "origin/master")}\n'
                           f'  **Common vendor tree commit:** '
-                          f'{update_and_get_tree("vendor/xiaomi/sdm660-common", "lineage-17.x")}\n'
+                          f'{update_and_get_tree("vendor/xiaomi/sdm660-common", "origin/lineage-17.x")}\n'
                           f'  **Kernel commit:** '
-                          f'{update_and_get_tree("kernel/xiaomi/platina", "kernel.lnx.4.4.r38-rel")}')
+                          f'{update_and_get_tree("kernel/xiaomi/platina", "origin/kernel.lnx.4.4.r38-rel")}')
+
+update_and_get_tree('compiler', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
 
 def lineage_exec(cmd):
