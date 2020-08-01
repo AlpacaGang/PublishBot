@@ -34,6 +34,7 @@ if INIT:
         'git clone https://gitlab.com/sdm660-platina/vendor_xiaomi_platina vendor/xiaomi/platina')
     os.system(
         'git clone https://github.com/FedorShatokhin2005/msm-4.4 kernel/xiaomi/platina')
+    os.system('git clone https://github.com/arter97/arm64-gcc.git compiler')
 
 tree_dir = os.getcwd()
 
