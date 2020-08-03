@@ -61,25 +61,6 @@ bot.send_message(CHAT_ID, '⚙️ Build started...\n')
 bot.send_message(CHAT_ID, '⚙️ Syncing main tree...\n')
 os.system('repo sync --force-sync')
 
-bot.send_message(CHAT_ID, '⚙️ Adding FaceUnlock...\n')
-os.system('git clone https://bitbucket.org/syberia-project/external_motorola_faceunlock.git '
-          '-b 10.0 external/motorola/faceunlock')
-
-
-def patch(p, link, sha):
-    os.chdir(p)
-    os.system(f'git fetch {link}')
-    os.system(f'git cherry-pick {sha}')
-    os.chdir(tree_dir)
-
-
-patch('vendor/lineage', 'https://github.com/neon-os/vendor_lineage',
-      'a3f5c3ef14bf8af6bd66104cf108271d414b418c')
-patch('frameworks/base', 'https://github.com/neon-os/frameworks_base',
-      'bc46b8eb130e2b3ce59c4b9adefc028a4459772e')
-patch('packages/apps/Settings', 'https://github.com/neon-os/packages_apps_Settings',
-      '7491139bc25f8b1382ab8691b76ed5523fe1d734')
-
 bot.send_message(CHAT_ID, '⚙️ Syncing device trees...\n')
 bot.send_message(CHAT_ID, f'⚙️ **Device tree commit:** {update_and_get_tree("device/xiaomi/platina", "origin/lineage-17.x")}\n'  # pylint: disable=line-too-long
                  f'  **Common device tree commit:** '
