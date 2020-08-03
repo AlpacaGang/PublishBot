@@ -20,11 +20,11 @@ DEVICE = 'platina'
 if '-i' in sys.argv:
     os.system('repo init -u git://github.com/LineageOS/android.git -b lineage-17.1')
     os.system('git clone https://github.com/PlatinaDevsSDM660/android_device_xiaomi_sdm660-common'
-              ' device/xiaomi/sdm660-common')
-    os.system(
-        'git clone https://github.com/PlatinaDevsSDM660/android_device_xiaomi_platina device/xiaomi/platina')
+              '-b lineage-17.x device/xiaomi/sdm660-common')
+    os.system('git clone https: // github.com/PlatinaDevsSDM660/android_device_xiaomi_platina'
+              '-b lineage-17.x device/xiaomi/platina')
     os.system('git clone https://github.com/PlatinaDevsSDM660/android_device_xiaomi_sdm660-common'
-              ' vendor/xiaomi/sdm660-common')
+              '-b lineage-17.x vendor/xiaomi/sdm660-common')
     os.system(
         'git clone https://gitlab.com/sdm660-platina/vendor_xiaomi_platina vendor/xiaomi/platina')
     os.system(
