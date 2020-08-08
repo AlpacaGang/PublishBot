@@ -47,12 +47,13 @@ def update_tree(p, b):
 update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
 
 COMPILER_STRING = subprocess.Popen([f'{CROSS_COMPILE}gcc', '--version'], stdout=subprocess.PIPE)\
-        .communicate()[0].decode()[:-1]
+    .communicate()[0].decode()[:-1]
 COMPILER_STRING = COMPILER_STRING.split('\n')[0]
 SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-' \
                   f'{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
-commit_msg = escape_markdown(repo.active_branch.commit.message.split("\n")[0], version=2)
+commit_msg = escape_markdown(
+    repo.active_branch.commit.message.split("\n")[0], version=2)
 commit = f'`{repo.active_branch.name}:' \
          f'`[{repo.active_branch.commit.hexsha[:8]}]' \
          f'(https://github.com/{REPO}/commit/{repo.active_branch.commit.hexsha})`:`\n' \
@@ -97,6 +98,6 @@ else:
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
                      text=f'❌ Build [\\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for '
-                          f'{DEVICE} failed in a {build_time}!')
+                          f'{DEVICE} failed in a {build_time}!', parse_mode=ParseMode.MARKDOWN_V2)
     sys.exit(1)
 os.chdir(tree_dir)
