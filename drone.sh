@@ -6,7 +6,7 @@ send_message() {
     --data-urlencode "chat_id=$CHAT_ID" \
     --data-urlencode "disable_web_page_preview=true" \
     -X POST \
-    https://api.telegram.org/bot$BOT_TOKEN/sendMessage;
+    https://api.telegram.org/bot$BOT_TOKEN/sendMessage > /dev/null;
 }
 
 escape_html () {
@@ -28,7 +28,7 @@ else
     echo -e "$equals\nUnknown Git hosting ($GITEA and $GITHUB are only supported)\n$equals"
     exit 1
 fi
-BUILD_NUMBER=$(escape_html $DRONE_BUILD_NUMBER)
+BUILD_NUMBER="$(escape_html $DRONE_BUILD_NUMBER)"
 BUILD_LINK="<a href=\"$(escape_html $DRONE_LINK/$DRONE_REPO/$BUILD_NUMBER)\">#$BUILD_NUMBER</a>"
 COMMIT="<a href=\"$(escape_html $DRONE_COMMIT_LINK)\">${DRONE_COMMIT_SHA::7}</a> by $(escape_html $DRONE_COMMIT_AUTHOR_NAME)"
 REPO="<a href=\"$(escape_html $DRONE_REPO_LINK)\">$(escape_html $DRONE_REPO)</a>"
