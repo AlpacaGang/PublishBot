@@ -27,7 +27,7 @@ def trigger(chat_id, options):
         head = f'<a href="{data["repository"]["html_url"]}/commit/{head_sha}">{escape(head_sha[:7])}</a>'
         if show_author_name:
             head += f'\n- by {data["pusher"]["full_name"] if gitea else data["pusher"]["name"]}'
-        bot.send_message(chat_id=chat_id, text=f'🔨 Some commits were reset. {ref} is now at {head}',
+        bot.send_message(chat_id=chat_id, text=f'🔨 Some commits were reset. <b>{ref}</b> is now at {head}',
                          parse_mode=ParseMode.HTML, disable_web_page_preview=True)
     else:
         if len(data['commits']) <= 6:
