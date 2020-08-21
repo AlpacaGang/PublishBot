@@ -98,6 +98,6 @@ else:
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     bot.send_message(chat_id=CHAT_ID,
                      text=f'❌ Build [\\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for '
-                          f'{DEVICE} failed in a {build_time}!', parse_mode=ParseMode.MARKDOWN_V2)
+                          f'{DEVICE} failed in a {build_time}\\!', parse_mode=ParseMode.MARKDOWN_V2)
     sys.exit(1)
 os.chdir(tree_dir)
