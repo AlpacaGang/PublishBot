@@ -26,8 +26,8 @@ REPO="<a href=\"$(escape_html $REPO_LINK)\">$(escape_html $CI_PROJECT_PATH)</a>"
 
 if [[ $1 == "--start" ]]; then
     send_message "⚙️ Pipeline $BUILD_LINK for $REPO (commit $COMMIT) started."
-elif [[ $DRONE_BUILD_STATUS == "success" ]]; then
-    send_message "✅ Pipeline $BUILD_LINK for $REPO (commit $COMMIT) succeed!"
-else
+elif [[ $1 == "--fail" ]]; then
     send_message "❌ Pipeline $BUILD_LINK for $REPO (commit $COMMIT) failed!"
+else
+    send_message "✅ Pipeline $BUILD_LINK for $REPO (commit $COMMIT) succeed!"
 fi
