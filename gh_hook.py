@@ -24,18 +24,18 @@ def trigger(chat_id):
     if 'forced' not in data:
         if 'project' in data:
             service = 'gitlab'
-            repo_url = data["project"]["homepage"]
-            repo_name = data["project"]["path_with_namespace"]
+            repo_url = data['project']['homepage']
+            repo_name = data['project']['path_with_namespace']
         else:
             service = 'gitea'
-            repo_url = data["repository"]["html_url"]
-            repo_name = data["repository"]["full_name"]
+            repo_url = data['repository']['html_url']
+            repo_name = data['repository']['full_name']
     else:
         service = 'github'
-        repo_url = data["repository"]["html_url"]
-        repo_name = data["repository"]["full_name"]
+        repo_url = data['repository']['html_url']
+        repo_name = data['repository']['full_name']
     if service == 'github' and data['forced']:
-        head_sha = data["after"]
+        head_sha = data['after']
         ref = f'{escape(repo_name)}:{escape(data["ref"].split("/")[-1])}'
         head = f'<a href="{repo_url}/commit/{head_sha}">{escape(head_sha[:7])}</a>'
         if show_author_name:
