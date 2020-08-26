@@ -17,7 +17,7 @@ escape_html () {
     echo -n $s
 }
 
-GITEA="https://git.vanutp.dev"
+GITEA="https://gitea.vanutp.dev"
 GITHUB="https://github.com"
 if [[ $DRONE_GIT_HTTP_URL == $GITEA* ]]; then
     DRONE_LINK="https://drone_gitea.vanutp.dev"
