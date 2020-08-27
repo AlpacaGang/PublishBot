@@ -20,7 +20,7 @@ escape_html () {
 INSTANCE_URL="https://git.vanutp.dev"
 REPO_LINK="$INSTANCE_URL/$CI_PROJECT_PATH"
 COMMIT_LINK="$REPO_LINK/-/commit/$CI_COMMIT_SHA"
-BUILD_LINK="<a href=\"$(escape_html $REPO_LINK/-/jobs/$CI_PIPELINE_ID)\">#$CI_PIPELINE_ID</a>"
+BUILD_LINK="<a href=\"$(escape_html $REPO_LINK/-/pipelines/$CI_PIPELINE_ID)\">#$CI_PIPELINE_ID</a>"
 COMMIT="<a href=\"$(escape_html $COMMIT_LINK)\">${CI_COMMIT_SHA::7}</a>"
 REPO="<a href=\"$(escape_html $REPO_LINK)\">$(escape_html $CI_PROJECT_PATH)</a>"
 
