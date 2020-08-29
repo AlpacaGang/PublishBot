@@ -49,6 +49,7 @@ def trigger(chat_id):
                 msg = escape(commit['message'])
                 if not multiline_commit:
                     msg = msg.split('\n')[0]
+                msg = msg.strip('\n')
                 commit_msg = f'<a href="{escape(commit["url"])}">{escape(commit["id"][:7])}</a>: <code>{msg}</code>'
                 if show_author_name:
                     commit_msg += f'\n- by {escape(commit["author"]["name"])}'
