@@ -6,7 +6,7 @@ send_message() {
     --data-urlencode "chat_id=$CHAT_ID" \
     --data-urlencode "disable_web_page_preview=true" \
     -X POST \
-    https://api.telegram.org/bot$BOT_TOKEN/sendMessage > /dev/null 2> /dev/null;
+    https://api.telegram.org/bot$BOT_TOKEN/sendMessage;
 }
 
 escape_html () {
