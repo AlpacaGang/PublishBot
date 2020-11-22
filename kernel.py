@@ -25,6 +25,7 @@ KERNEL_VERSION = f'Alpaca, {TIMESTAMP.strftime("%Y%m%d")}'
 DEVICE = 'platina'
 DEFCONFIG = 'platina_defconfig'
 CROSS_COMPILE = expanduser('~') + '/build/tools/arm64-gcc/bin/aarch64-elf-'
+CROSS_COMPILE_ARM32 = expanduser('~') + '/build/tools/arm32-gcc/bin/arm-eabi-'
 REPO = 'FedorShatokhin2005/msm-4.4'
 NPROC = multiprocessing.cpu_count()
 
@@ -45,6 +46,7 @@ def update_tree(p, b):
 
 
 update_tree('../tools/arm64-gcc', '811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e')
+update_tree('../tools/arm32-gcc', '566df579fa8123a5357c4bdcbbe62a192c5b37b4')
 
 COMPILER_STRING = subprocess.Popen([f'{CROSS_COMPILE}gcc', '--version'], stdout=subprocess.PIPE)\
     .communicate()[0].decode()[:-1]
@@ -71,7 +73,7 @@ if os.path.isfile('.config'):
 print('========== Making defconfig ==========')
 os.system(f'make O=out ARCH=arm64 {DEFCONFIG}')
 print('========== Building kernel ==========')
-if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE}'):
+if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CROSS_COMPILE={CROSS_COMPILE} CROSS_COMPILE_ARM32={CROSS_COMPILE_ARM32}'):
     print('========== Build succeed ==========')
     os.rename('out/arch/arm64/boot/Image.gz-dtb',
               expanduser('~') + '/build/AK3/Image.gz-dtb')
