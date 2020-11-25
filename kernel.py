@@ -19,7 +19,7 @@ os.environ['KERNEL_USE_CCACHE'] = '1'
 start_time = time()
 TIMESTAMP = datetime.now()
 
-CHAT_ID = -1001115967921
+CHAT_ID = -1001194197619
 FILENAME = f'../AlpacaKernel-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-unsigned.zip'
 KERNEL_VERSION = f'Alpaca, {TIMESTAMP.strftime("%Y%m%d")}'
 DEVICE = 'platina'
