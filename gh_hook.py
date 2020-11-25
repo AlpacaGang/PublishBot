@@ -1,5 +1,6 @@
+import os
 import json
-from pprint import pprint
+from time import time
 
 from flask import Flask, request
 from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
@@ -18,6 +19,24 @@ pipeline_responses = {
     'success': '<b>🥳 Pipeline succeed!</b>',
     'canceled': '<b>✋ Pipeline cancelled</b>'
 }
+
+
+@app.route('/debug/<chat_id>', methods=['POST'])
+def debug(chat_id):
+    if not chat_id.startswith('-100'):
+        chat_id = f'-100{chat_id}'
+    chat_id = int(chat_id)
+    filename = f'{int(time())}'
+    if 'X-Gitlab-Event' in request.headers:
+        filename = f'gl-{request.headers["X-Gitlab-Event"]}-{filename}'
+    else:
+        filename = f'rq-{filename}'
+    filename += '.json'
+    with open(f'/tmp/{filename}', 'w') as f:
+        f.write(request.data.decode())
+    bot.send_document(chat_id=chat_id, document=open(f'/tmp/{filename}', 'rb'))
+    os.remove(f'/tmp/{filename}')
+    return 'OK'
 
 
 @app.route('/trigger/<chat_id>', methods=['POST'])
