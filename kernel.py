@@ -19,7 +19,6 @@ start_time = time()
 TIMESTAMP = datetime.now()
 
 CHAT_ID = -1001115967921
-FILENAME = f'../AlpacaKernel-{TIMESTAMP.strftime("%Y%m%d-%H%M")}-unsigned.zip'
 KERNEL_VERSION = f'Alpaca, {TIMESTAMP.strftime("%Y%m%d")}'
 DEVICE = 'platina'
 DEFCONFIG = 'platina_defconfig'
@@ -44,12 +43,11 @@ def update_tree(p, b):
     os.chdir(tree_dir)
 
 
-
-COMPILER_STRING = subprocess.Popen([f'clang', '--version'], stdout=subprocess.PIPE)\
-    .communicate()[0].decode()[:-1]
+COMPILER_STRING = subprocess.Popen([f'clang', '--version'], stdout=subprocess.PIPE) \
+                      .communicate()[0].decode()[:-1]
 COMPILER_STRING = COMPILER_STRING.split('\n')[0]
-SIGNED_FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-' \
-                  f'{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
+FILENAME = f'../AlpacaKernel-{os.environ.get("CIRCLE_BUILD_NUM")}-' \
+           f'{TIMESTAMP.strftime("%Y%m%d-%H%M")}-{repo.active_branch.commit.hexsha[:8]}.zip'
 
 commit_msg = escape_markdown(
     repo.active_branch.commit.message.split("\n")[0], version=2)
@@ -70,26 +68,24 @@ if os.path.isfile('.config'):
 print('========== Making defconfig ==========')
 os.system(f'make O=out ARCH=arm64 {DEFCONFIG}')
 print('========== Building kernel ==========')
-if not os.system(f'make -j{NPROC} O=out ARCH=arm64 CC=clang AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE={CROSS_COMPILE} CROSS_COMPILE_ARM32={CROSS_COMPILE_ARM32}'):
+if not os.system(
+        f'make -j{NPROC} O=out ARCH=arm64 CC=clang AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE={CROSS_COMPILE} CROSS_COMPILE_ARM32={CROSS_COMPILE_ARM32}'):
     print('========== Build succeed ==========')
     os.rename('out/arch/arm64/boot/Image.gz-dtb',
               expanduser('~') + '/build/AK3/Image.gz-dtb')
     os.chdir(expanduser('~') + '/build/AK3')
     os.system(f'zip -r9 {FILENAME} * -x .git {FILENAME}')
     print('========== Signing ==========')
-    os.system(
-        f'java -jar {ZIPSIGNER_PATH} {FILENAME} {SIGNED_FILENAME}')
     delta = int(time() - start_time)
     build_time = f'{delta // 60 % 60} minutes {delta % 60} seconds'
     file_hash = hashlib.sha1()
-    with open(SIGNED_FILENAME, 'rb') as f:
+    with open(FILENAME, 'rb') as f:
         for chunk in iter(lambda: f.read(4096), b''):
             file_hash.update(chunk)
-    bot.send_document(chat_id=CHAT_ID, document=open(SIGNED_FILENAME, 'rb'),
+    bot.send_document(chat_id=CHAT_ID, document=open(FILENAME, 'rb'),
                       caption=f'✅ Build [\\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for '
                               f'{DEVICE} finished in a {build_time} \\| *SHA1:* `{file_hash.hexdigest()}`',
                       parse_mode=ParseMode.MARKDOWN_V2)
-    os.remove(SIGNED_FILENAME)
     os.remove(FILENAME)
 else:
     print('========== Build failed ==========')
@@ -98,6 +94,6 @@ else:
     bot.send_message(chat_id=CHAT_ID,
                      text=f'❌ Build [\\#{os.environ.get("CIRCLE_BUILD_NUM")}]({build_url}) for '
                           f'{DEVICE} failed in a {build_time}\\!', parse_mode=ParseMode.MARKDOWN_V2,
-                          disable_web_page_preview=True)
+                     disable_web_page_preview=True)
     sys.exit(1)
 os.chdir(tree_dir)
